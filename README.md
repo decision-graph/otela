@@ -136,11 +136,15 @@ development, but for billions of spans use `parquet`.
 | Streaming Parquet writer                        | implemented    |
 | `load` / `to_dfs` / `to_dicts` / `to_tensors` / `to_parquet` / `dims` | implemented    |
 | `otela totables` / `otela torecords` CLI        | implemented    |
+| Real-trace fixtures: LangGraph (OpenInference)  | implemented    |
+| Real-trace fixtures: Google ADK (OTel GenAI)    | implemented    |
+| Real-trace fixtures: LlamaIndex (RETRIEVER / EMBEDDING) | planned — next |
+| HuggingFace dataset adapters                    | planned — after LlamaIndex |
+| Phoenix / Langfuse native export readers        | planned — opportunistic |
 | `workflow-graph` spec, `wg/v1`                  | not yet started |
 | Tokenized-text tensors for LLM fine-tuning      | not yet started |
 | Streaming nested-record (`torecords`) writer    | not yet started |
 | Parquet directory partitioning (Hive style)     | not yet started |
-| Real-world trace test corpus                    | not yet started |
 
 ## Schema Reference (`agent-trace`, `at/v1`)
 
@@ -265,15 +269,37 @@ model call.
 
 ## Roadmap
 
+### Next up
+
+- **LlamaIndex real-trace fixture (OpenInference).** Closes the last
+  major SDK coverage gap: `RETRIEVER` and `EMBEDDING` span kinds have
+  only been validated against synthetic fixtures so far. LangGraph +
+  ADK don't exercise them. Same `scripts/generate_fixtures.py` harness;
+  expected to surface deeper indexed attributes
+  (`retrieval.documents.N.document.metadata.*`) that may warrant
+  promotion from `raw_attributes_json`.
+- **HuggingFace dataset adapters, after LlamaIndex.** Most agent-trace
+  datasets on HF aren't OTLP-shaped — typically conversation logs in
+  parquet/jsonl, sometimes OTel exports in vendor-specific JSON. Each
+  dataset usually needs a small adapter that reshapes its rows into our
+  `RawSpan` iterator; the rest of the pipeline (`normalize` → `builder`
+  → schemas) doesn't change. Sequenced after LlamaIndex so the spec is
+  rock-solid before discovering data-shape issues at scale.
+
+### Later
+
+- **Phoenix / Langfuse native export readers.** Both speak OTLP on
+  ingest, but their export formats are vendor-shaped. If you have
+  traces in those backends today, the fastest path is configuring an
+  OTLP file dump on the backend; native readers are a convenience
+  layer worth adding once we see real demand.
 - `wg/v1` workflow-graph spec
-- A real-world OTel trace corpus for testing (Phoenix / Langfuse / raw
-  collector exports — looking for sample data)
+- Tokenizer-aware `to_tensors()` mode for LLM fine-tuning
+  (`input_ids` / `attention_mask` per message)
 - Streaming `torecords` writer (per-trace flush as soon as a trace is
   observably complete)
 - Hive-partitioned Parquet output (`/service=foo/date=2026-04-22/...`)
   for direct DuckDB / Spark consumption
-- Tokenizer-aware `to_tensors()` mode for LLM fine-tuning
-  (`input_ids` / `attention_mask` per message)
 - Migration utilities once a second `at` version exists
 
 If you have production traces that would make a good test fixture,
