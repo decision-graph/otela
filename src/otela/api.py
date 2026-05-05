@@ -5,7 +5,9 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Any
 
+import orjson
 import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
@@ -145,6 +147,85 @@ def to_parquet(
         compression=compression,
     )
     return paths
+
+
+def to_dicts(tables: dict[str, pa.Table]) -> list[dict[str, Any]]:
+    """Convert the table dict into a list of nested trace records.
+
+    Each record is a single trace with all its spans nested underneath, and
+    messages/documents/links nested under each span. Trace-level fields
+    (`trace_id`, `start_time_unix_nano`, `total_tokens`, ...) sit at the
+    record root.
+
+    Per-span fields shadow nothing — the span-level versions are nested
+    under `"spans"`. Redundant FK columns (`trace_id` on spans,
+    `trace_id`/`span_id` on messages/documents/links) are stripped because
+    they're implied by the nesting. `raw_attributes_json` is decoded back
+    into a `raw_attributes` dict (or `None`).
+
+    This materializes the entire dataset into Python dicts. For
+    billion-trace scale, write parquet first and process partitions with
+    DuckDB or Polars rather than calling this directly.
+    """
+    spans_rows = tables["spans"].to_pylist()
+    messages_rows = tables["messages"].to_pylist()
+    documents_rows = tables["documents"].to_pylist()
+    links_rows = tables["links"].to_pylist()
+    traces_rows = tables["traces"].to_pylist()
+
+    # Index span children by (trace_id, span_id).
+    msgs_by_span: dict[tuple[str, str], list[dict]] = {}
+    for m in messages_rows:
+        msgs_by_span.setdefault((m["trace_id"], m["span_id"]), []).append(
+            _strip_keys(m, _CHILD_FK_KEYS)
+        )
+    docs_by_span: dict[tuple[str, str], list[dict]] = {}
+    for d in documents_rows:
+        docs_by_span.setdefault((d["trace_id"], d["span_id"]), []).append(
+            _strip_keys(d, _CHILD_FK_KEYS)
+        )
+    links_by_span: dict[tuple[str, str], list[dict]] = {}
+    for ln in links_rows:
+        links_by_span.setdefault((ln["trace_id"], ln["span_id"]), []).append(
+            _strip_keys(ln, _CHILD_FK_KEYS)
+        )
+
+    # Index spans by trace_id, preserving input order so callers see a
+    # natural ordering instead of something hash-derived.
+    spans_by_trace: dict[str, list[dict]] = {}
+    for s in spans_rows:
+        spans_by_trace.setdefault(s["trace_id"], []).append(s)
+
+    records: list[dict[str, Any]] = []
+    for trace in traces_rows:
+        tid = trace["trace_id"]
+        nested_spans: list[dict[str, Any]] = []
+        for span in spans_by_trace.get(tid, []):
+            sid = span["span_id"]
+            key = (tid, sid)
+            raw_json = span.get("raw_attributes_json")
+            raw_attrs = orjson.loads(raw_json) if raw_json else None
+            nested_span = _strip_keys(span, _SPAN_FK_KEYS)
+            nested_span["raw_attributes"] = raw_attrs
+            nested_span["messages"] = msgs_by_span.get(key, [])
+            nested_span["documents"] = docs_by_span.get(key, [])
+            nested_span["links"] = links_by_span.get(key, [])
+            nested_spans.append(nested_span)
+        record = dict(trace)
+        record["spans"] = nested_spans
+        records.append(record)
+    return records
+
+
+# Columns dropped from nested span dicts (redundant with parent trace).
+_SPAN_FK_KEYS: frozenset[str] = frozenset({"trace_id", "raw_attributes_json"})
+
+# Columns dropped from nested message/document/link dicts.
+_CHILD_FK_KEYS: frozenset[str] = frozenset({"trace_id", "span_id", "spec", "spec_version"})
+
+
+def _strip_keys(d: dict[str, Any], keys: frozenset[str]) -> dict[str, Any]:
+    return {k: v for k, v in d.items() if k not in keys}
 
 
 def dims(tables: dict[str, pa.Table]) -> dict[str, pa.Table]:

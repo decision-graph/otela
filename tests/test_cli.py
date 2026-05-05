@@ -98,3 +98,49 @@ def test_invalid_format_rejected(fixtures_dir, tmp_path: Path):
                 "xml",
             ]
         )
+
+
+# ---- torecords ----------------------------------------------------------
+
+
+def test_torecords_jsonl_default_writes_traces_file(fixtures_dir, tmp_path: Path, capsys):
+    rc = main(["torecords", str(fixtures_dir), str(tmp_path), "--format", "jsonl"])
+    assert rc == 0
+    out = tmp_path / "traces.jsonl"
+    assert out.exists()
+    lines = out.read_text().splitlines()
+    assert len(lines) == 2
+    parsed = [json.loads(line) for line in lines]
+    span_counts = {r["trace_id"]: len(r["spans"]) for r in parsed}
+    assert sum(span_counts.values()) == 13
+    msg = capsys.readouterr().out
+    assert "2 records" in msg
+
+
+def test_torecords_json_default_format(fixtures_dir, tmp_path: Path):
+    rc = main(["torecords", str(fixtures_dir), str(tmp_path)])
+    assert rc == 0
+    out = tmp_path / "traces.json"
+    assert out.exists()
+    payload = json.loads(out.read_text())
+    assert isinstance(payload, list)
+    assert len(payload) == 2
+
+
+def test_torecords_missing_input_returns_error(tmp_path: Path, capsys):
+    rc = main(["torecords", str(tmp_path / "nope"), str(tmp_path)])
+    assert rc == 1
+    assert "does not exist" in capsys.readouterr().err
+
+
+def test_torecords_invalid_format_rejected(fixtures_dir, tmp_path: Path):
+    with pytest.raises(SystemExit):
+        main(
+            [
+                "torecords",
+                str(fixtures_dir),
+                str(tmp_path),
+                "--format",
+                "csv",
+            ]
+        )

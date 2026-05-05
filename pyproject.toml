@@ -16,12 +16,14 @@ otela = "otela.cli:main"
 
 [project.optional-dependencies]
 pandas = ["pandas>=2.1.0"]
+ml = ["torch>=2.2.0"]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0.0",
     "ruff>=0.6.0",
     "pandas>=2.1.0",
+    "torch>=2.2.0",
 ]
 
 [build-system]

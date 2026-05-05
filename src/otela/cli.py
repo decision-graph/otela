@@ -1,15 +1,19 @@
 """Command-line interface for otela.
 
-Currently exposes:
+Subcommands:
 
-    otela totables INPUT OUTPUT_DIR [--format parquet|csv|arrow|json|jsonl] [--spec at/v1]
+    otela totables  INPUT OUTPUT_DIR [--format parquet|csv|arrow|json|jsonl] [--spec at/v1]
+    otela torecords INPUT OUTPUT_DIR [--format json|jsonl] [--spec at/v1]
 
-Parquet is the default and the only streaming format. The other formats
-materialize the full tableset in memory before writing — fine for small
-traces, but for billions of spans you should be using parquet anyway.
+`totables` writes one file per table (spans, messages, documents, links,
+traces). Parquet streams to disk with bounded memory; the other formats
+materialize the full tableset.
 
-The `torecords` subcommand (nested JSON/JSONL records, one per trace)
-is reserved and will land alongside `to_dicts()`.
+`torecords` writes a single file (`traces.json` or `traces.jsonl`) where
+each record is a trace with all of its spans nested inside, and
+messages/documents/links nested under each span. JSONL is preferable for
+larger datasets — each line is a complete trace, so downstream consumers
+can stream the file.
 """
 
 from __future__ import annotations
@@ -19,14 +23,18 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+import orjson
 import pyarrow as pa
 import pyarrow.csv as pa_csv
 import pyarrow.feather as pa_feather
 
-from .api import load, to_parquet
+from .api import load, to_dicts, to_parquet
 
-FORMATS = ("parquet", "csv", "arrow", "json", "jsonl")
-DEFAULT_FORMAT = "parquet"
+TOTABLES_FORMATS = ("parquet", "csv", "arrow", "json", "jsonl")
+TOTABLES_DEFAULT = "parquet"
+
+TORECORDS_FORMATS = ("json", "jsonl")
+TORECORDS_DEFAULT = "json"
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -34,6 +42,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "totables":
         return _cmd_totables(args)
+    if args.command == "torecords":
+        return _cmd_torecords(args)
     parser.print_help()
     return 2
 
@@ -53,9 +63,9 @@ def _build_parser() -> argparse.ArgumentParser:
     totables.add_argument("output_dir", help="Output directory.")
     totables.add_argument(
         "--format",
-        choices=FORMATS,
-        default=DEFAULT_FORMAT,
-        help=f"Output format (default: {DEFAULT_FORMAT}).",
+        choices=TOTABLES_FORMATS,
+        default=TOTABLES_DEFAULT,
+        help=f"Output format (default: {TOTABLES_DEFAULT}).",
     )
     totables.add_argument(
         "--spec",
@@ -73,6 +83,25 @@ def _build_parser() -> argparse.ArgumentParser:
         default="zstd",
         help="Parquet compression codec (parquet only). Default: zstd.",
     )
+
+    torecords = sub.add_parser(
+        "torecords",
+        help="Convert OTLP/JSON traces into nested records (one per trace).",
+    )
+    torecords.add_argument("input", help="OTLP/JSON file or directory of files.")
+    torecords.add_argument("output_dir", help="Output directory.")
+    torecords.add_argument(
+        "--format",
+        choices=TORECORDS_FORMATS,
+        default=TORECORDS_DEFAULT,
+        help=f"Output format (default: {TORECORDS_DEFAULT}).",
+    )
+    torecords.add_argument(
+        "--spec",
+        default="at/v1",
+        help="Spec/version to apply (default: at/v1).",
+    )
+
     return parser
 
 
@@ -100,12 +129,35 @@ def _cmd_totables(args: argparse.Namespace) -> int:
 
     # Non-streaming formats: materialize once, write per table.
     tables = load(in_path, spec=args.spec)
-    written: list[Path] = []
     for name, table in tables.items():
         out_path = out_dir / f"{name}.{_extension_for(fmt)}"
         _write_table(table, out_path, fmt)
-        written.append(out_path)
         print(f"{name}: {out_path}")
+    return 0
+
+
+def _cmd_torecords(args: argparse.Namespace) -> int:
+    in_path = Path(args.input)
+    out_dir = Path(args.output_dir)
+
+    if not in_path.exists():
+        print(f"error: input path does not exist: {in_path}", file=sys.stderr)
+        return 1
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    tables = load(in_path, spec=args.spec)
+    records = to_dicts(tables)
+
+    fmt = args.format
+    out_path = out_dir / f"traces.{fmt}"
+    with out_path.open("wb") as f:
+        if fmt == "jsonl":
+            for r in records:
+                f.write(orjson.dumps(r))
+                f.write(b"\n")
+        else:  # json
+            f.write(orjson.dumps(records))
+    print(f"traces: {out_path} ({len(records)} records)")
     return 0
 
 
@@ -117,8 +169,6 @@ def _extension_for(fmt: str) -> str:
 
 def _write_table(table: pa.Table, path: Path, fmt: str) -> None:
     if fmt == "csv":
-        # CSV cannot carry the spec/spec_version columns as anything other
-        # than strings, but that's fine — they already are strings.
         pa_csv.write_csv(table, path)
         return
     if fmt == "arrow":
@@ -131,8 +181,6 @@ def _write_table(table: pa.Table, path: Path, fmt: str) -> None:
 
 
 def _write_json(table: pa.Table, path: Path, *, lines: bool) -> None:
-    import orjson
-
     rows = table.to_pylist()
     with path.open("wb") as f:
         if lines:
