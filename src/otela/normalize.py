@@ -454,6 +454,14 @@ def _extract_otel_genai(
             out.model_name = _coerce_text(attrs[key])
             consumed.add(key)
 
+    # Some SDKs (Google ADK among them) emit `call_llm`-style internal spans
+    # with `gen_ai.request.model` and `gen_ai.usage.*` but no
+    # `gen_ai.operation.name`. Treat those as LLM spans rather than UNKNOWN.
+    if out.kind is None and (
+        out.model_name or any(k.startswith("gen_ai.usage.") for k in attrs)
+    ):
+        out.kind = KIND_LLM
+
     if "gen_ai.tool.name" in attrs:
         out.tool_name = _coerce_text(attrs["gen_ai.tool.name"])
         consumed.add("gen_ai.tool.name")
@@ -527,6 +535,24 @@ def _extract_otel_genai(
                     content=content,
                 )
             )
+    # Google ADK extension: messages are encoded as JSON in
+    # `gcp.vertex.agent.llm_request` / `llm_response` attributes (Gemini's
+    # `genai.Content` shape) instead of as `gen_ai.*` span events. Fall back
+    # to those when no events were present.
+    if not in_msgs and not out_msgs:
+        adk_in, adk_out = _extract_adk_genai_messages(attrs, consumed)
+        in_msgs.extend(adk_in)
+        out_msgs.extend(adk_out)
+
+    # ADK also encodes tool I/O as `gcp.vertex.agent.tool_call_args` /
+    # `tool_response` rather than `gen_ai.tool.call.arguments`.
+    if "gcp.vertex.agent.tool_call_args" in attrs and not out.input_text:
+        out.input_text = _coerce_text(attrs["gcp.vertex.agent.tool_call_args"])
+        consumed.add("gcp.vertex.agent.tool_call_args")
+    if "gcp.vertex.agent.tool_response" in attrs and not out.output_text:
+        out.output_text = _coerce_text(attrs["gcp.vertex.agent.tool_response"])
+        consumed.add("gcp.vertex.agent.tool_response")
+
     # Reassign positions in stable order (inputs first, then outputs).
     msgs: list[NormalizedMessage] = []
     for i, m in enumerate(in_msgs):
@@ -550,6 +576,96 @@ def _extract_otel_genai(
             out.output_text = _join_messages_typed(out_msgs)
     elif out.kind == KIND_EMBEDDING:
         out.io_format = IO_TEXT
+    return out
+
+
+def _extract_adk_genai_messages(
+    attrs: dict[str, Any], consumed: set[str]
+) -> tuple[list[NormalizedMessage], list[NormalizedMessage]]:
+    """Parse Google ADK's `gcp.vertex.agent.llm_request` / `llm_response`.
+
+    The payloads are JSON-encoded `genai.Content` structs (Gemini's shape):
+
+        {"contents": [{"role": "user|model", "parts": [{"text"|"function_call"|"function_response": ...}]}],
+         "config": {"system_instruction": "..."}}
+
+    Inputs go to `in_msgs`, the response goes to `out_msgs`. The Gemini
+    role `"model"` is normalized to `"assistant"` so messages from
+    different SDKs join cleanly.
+    """
+    in_msgs: list[NormalizedMessage] = []
+    out_msgs: list[NormalizedMessage] = []
+
+    req_raw = attrs.get("gcp.vertex.agent.llm_request")
+    if req_raw:
+        try:
+            req = orjson.loads(req_raw) if isinstance(req_raw, str) else req_raw
+        except (ValueError, TypeError):
+            req = None
+        if isinstance(req, dict):
+            sys_inst = (req.get("config") or {}).get("system_instruction")
+            if sys_inst:
+                in_msgs.append(
+                    NormalizedMessage(position=0, direction=DIR_INPUT, role="system", content=str(sys_inst))
+                )
+            for content in req.get("contents") or []:
+                in_msgs.extend(_genai_content_to_messages(content, DIR_INPUT))
+            consumed.add("gcp.vertex.agent.llm_request")
+
+    resp_raw = attrs.get("gcp.vertex.agent.llm_response")
+    if resp_raw:
+        try:
+            resp = orjson.loads(resp_raw) if isinstance(resp_raw, str) else resp_raw
+        except (ValueError, TypeError):
+            resp = None
+        if isinstance(resp, dict) and isinstance(resp.get("content"), dict):
+            out_msgs.extend(_genai_content_to_messages(resp["content"], DIR_OUTPUT))
+            consumed.add("gcp.vertex.agent.llm_response")
+
+    return in_msgs, out_msgs
+
+
+def _genai_content_to_messages(content: dict[str, Any], direction: str) -> list[NormalizedMessage]:
+    """Decode a single `genai.Content` block into one or more messages.
+
+    A Content has a role and a list of parts. Each part is one of:
+      - `{"text": "..."}`              → message content text
+      - `{"function_call": {...}}`     → assistant deciding to call a tool
+      - `{"function_response": {...}}` → tool result coming back to the model
+    """
+    role_raw = content.get("role") or "user"
+    role = "assistant" if role_raw == "model" else role_raw
+    out: list[NormalizedMessage] = []
+    for part in content.get("parts") or []:
+        if not isinstance(part, dict):
+            continue
+        if "text" in part and part["text"] is not None:
+            out.append(
+                NormalizedMessage(position=0, direction=direction, role=role, content=str(part["text"]))
+            )
+        elif "function_call" in part:
+            fc = part["function_call"] or {}
+            out.append(
+                NormalizedMessage(
+                    position=0,
+                    direction=direction,
+                    role=role,
+                    content=orjson.dumps(fc).decode(),
+                    tool_call_id=fc.get("id"),
+                )
+            )
+        elif "function_response" in part:
+            fr = part["function_response"] or {}
+            payload = fr.get("response", fr)
+            out.append(
+                NormalizedMessage(
+                    position=0,
+                    direction=direction,
+                    role="tool",
+                    content=orjson.dumps(payload).decode(),
+                    tool_call_id=fr.get("id"),
+                )
+            )
     return out
 
 

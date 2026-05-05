@@ -285,8 +285,6 @@ please open an issue.
 git clone https://github.com/zach-blumenfeld/otela
 cd otela
 uv sync                  # installs runtime + dev deps (pytest, ruff, torch, pandas)
-uv run pytest -q
-uv run ruff check src/ tests/
 ```
 
 Project layout:
@@ -301,6 +299,79 @@ src/otela/
 ├── api.py         # load(), to_dfs(), to_dicts(), to_parquet(), dims()
 ├── tensors.py     # to_tensors() — optional torch dependency
 └── cli.py         # otela totables / otela torecords
+```
+
+### Running tests
+
+```bash
+uv run pytest -q                      # full suite (synthetic fixtures only)
+uv run pytest -v                      # verbose, shows each test name
+uv run pytest tests/test_to_dicts.py  # one file
+uv run pytest -k traces               # by name pattern
+```
+
+Tests against **real-trace fixtures** (`tests/test_real_traces.py`) are
+skipped automatically when their fixture file doesn't exist. To run
+them, generate the fixture first — see "Generating real-trace fixtures"
+below. Without the fixture you'll see something like:
+
+```
+92 passed, 11 skipped
+```
+
+That's expected — the suite is green; the skips are real-trace tests
+waiting on a regenerated fixture.
+
+### Linting
+
+```bash
+uv run ruff check src/ tests/ scripts/
+uv run ruff check --fix src/ tests/ scripts/   # auto-fix
+```
+
+CI runs both `pytest` and `ruff check` — both must be green.
+
+### Generating real-trace fixtures
+
+Synthetic fixtures (`tests/fixtures/openinference_sample.json`,
+`otel_genai_sample.json`) cover the spec, but production SDKs surface
+shape edge cases that hand-written fixtures don't. The
+`scripts/generate_fixtures.py` harness runs minimal example agents under
+real instrumentation and commits the resulting OTLP/JSON to
+`tests/fixtures/real/` so the test suite can assert against them.
+
+Currently supported sources:
+
+- `langgraph` — LangGraph React agent + OpenInference instrumentation
+- `adk` — Google ADK agent via LiteLLM (OTel GenAI semconv)
+
+Generate fixtures:
+
+```bash
+uv sync --group fixtures
+export OPENAI_API_KEY=sk-...
+uv run python scripts/generate_fixtures.py langgraph
+uv run python scripts/generate_fixtures.py adk
+```
+
+Outputs:
+
+- `tests/fixtures/real/langgraph_research_agent.json`
+- `tests/fixtures/real/adk_research_agent.json`
+
+The ADK generator routes through LiteLLM to OpenAI under the hood — ADK's
+OTel emission is independent of the model backend, so a `gpt-4o-mini`-served
+trace exercises the same `gen_ai.*` events code path as a Vertex Gemini
+one. No GCP/Vertex setup required; your `OPENAI_API_KEY` is enough.
+
+The corresponding tests in `tests/test_real_traces.py` skip
+automatically if the fixture is missing — contributors who don't
+regenerate fixtures still get a green suite.
+
+Quick-summary any otela-readable trace file:
+
+```bash
+uv run python scripts/inspect_fixture.py tests/fixtures/real/langgraph_research_agent.json
 ```
 
 ## License

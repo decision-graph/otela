@@ -1,0 +1,1214 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.41.1"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "langgraph-research-agent"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "openinference.instrumentation.langchain",
+            "version": "0.1.63"
+          },
+          "spans": [
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "bbac30b1b6aff8f8",
+              "parentSpanId": "c2258873e7affa2c",
+              "name": "Prompt",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096770179072",
+              "endTimeUnixNano": "1778006096770252032",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}], \"remaining_steps\": 10006}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "[{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}]"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\", \"checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "d69c9aec34e20c81",
+              "parentSpanId": "c2258873e7affa2c",
+              "name": "ChatOpenAI",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096770939136",
+              "endTimeUnixNano": "1778006098581764864",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [[{\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"HumanMessage\"], \"kwargs\": {\"content\": \"What's the weather in San Francisco?\", \"type\": \"human\", \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}]]}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"generations\": [[{\"text\": \"\", \"generation_info\": {\"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ChatGeneration\", \"message\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"AIMessage\"], \"kwargs\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}, \"invalid_tool_calls\": []}}}]], \"llm_output\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\"}, \"run\": null, \"type\": \"LLMResult\"}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.role",
+                  "value": {
+                    "stringValue": "assistant"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.tool_calls.0.tool_call.id",
+                  "value": {
+                    "stringValue": "call_TiDgkxCIzQz5Qsja4gDNEwBW"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.tool_calls.0.tool_call.function.name",
+                  "value": {
+                    "stringValue": "get_weather"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.tool_calls.0.tool_call.function.arguments",
+                  "value": {
+                    "stringValue": "{\"city\": \"San Francisco\"}"
+                  }
+                },
+                {
+                  "key": "llm.invocation_parameters",
+                  "value": {
+                    "stringValue": "{\"model\": \"gpt-4o-mini\", \"model_name\": \"gpt-4o-mini\", \"stream\": false, \"temperature\": 0.0, \"_type\": \"openai-chat\", \"stop\": null, \"tools\": [{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Get the current weather for a city.\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"string\"}}, \"required\": [\"city\"], \"type\": \"object\"}}}]}"
+                  }
+                },
+                {
+                  "key": "llm.tools.0.tool.json_schema",
+                  "value": {
+                    "stringValue": "{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Get the current weather for a city.\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"string\"}}, \"required\": [\"city\"], \"type\": \"object\"}}}"
+                  }
+                },
+                {
+                  "key": "llm.provider",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "llm.system",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "llm.model_name",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt",
+                  "value": {
+                    "intValue": "52"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion",
+                  "value": {
+                    "intValue": "15"
+                  }
+                },
+                {
+                  "key": "llm.token_count.total",
+                  "value": {
+                    "intValue": "67"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion_details.audio",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion_details.reasoning",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt_details.audio",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt_details.cache_read",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langchain_chat_model\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\", \"checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\", \"ls_provider\": \"openai\", \"ls_model_name\": \"gpt-4o-mini\", \"ls_model_type\": \"chat\", \"ls_temperature\": 0.0}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "LLM"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "c2258873e7affa2c",
+              "parentSpanId": "106c79496d7fcf07",
+              "name": "RunnableSequence",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096770086144",
+              "endTimeUnixNano": "1778006098583211776",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}], \"remaining_steps\": 10006}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\", \"checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "6c8c1e47240de251",
+              "parentSpanId": "106c79496d7fcf07",
+              "name": "call_model",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096769927936",
+              "endTimeUnixNano": "1778006098583628800",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}], \"remaining_steps\": 10006}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "dc48a4eb04cd15bb",
+              "parentSpanId": "106c79496d7fcf07",
+              "name": "should_continue",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098584464128",
+              "endTimeUnixNano": "1778006098585012992",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}], \"remaining_steps\": 10006}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "[\"Send(node='tools', arg={'__type': 'tool_call_with_context', 'tool_call': {'name': 'get_weather', 'args': {'city': 'San Francisco'}, 'id': 'call_TiDgkxCIzQz5Qsja4gDNEwBW', 'type': 'tool_call'}, 'state': {'messages': [HumanMessage(content=\\\"What's the weather in San Francisco?\\\", additional_kwargs={}, response_metadata={}, id='b3f58814-c428-4232-9c71-df10097d0790'), AIMessage(content='', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 15, 'prompt_tokens': 52, 'total_tokens': 67, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_provider': 'openai', 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_6f731aea6a', 'id': 'chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ', 'service_tier': 'default', 'finish_reason': 'tool_calls', 'logprobs': None}, id='lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0', tool_calls=[{'name': 'get_weather', 'args': {'city': 'San Francisco'}, 'id': 'call_TiDgkxCIzQz5Qsja4gDNEwBW', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 52, 'output_tokens': 15, 'total_tokens': 67, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})], 'remaining_steps': 10006}})\"]"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "106c79496d7fcf07",
+              "parentSpanId": "a1f5f34285226435",
+              "name": "agent",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096769801984",
+              "endTimeUnixNano": "1778006098585478912",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}], \"remaining_steps\": 10006}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 1, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:69119909-1daf-2c99-7a41-7963b75dcc4e\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "AGENT"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "dd0687a4489b881f",
+              "parentSpanId": "7ac5bb846a72eec9",
+              "name": "get_weather",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098588051968",
+              "endTimeUnixNano": "1778006098588592128",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{'city': 'San Francisco'}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": null, \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "tool.name",
+                  "value": {
+                    "stringValue": "get_weather"
+                  }
+                },
+                {
+                  "key": "tool.description",
+                  "value": {
+                    "stringValue": "Get the current weather for a city."
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 2, \"langgraph_node\": \"tools\", \"langgraph_triggers\": [\"__pregel_push\"], \"langgraph_path\": [\"__pregel_push\", 0, false], \"langgraph_checkpoint_ns\": \"tools:5ae50f57-5a36-74b8-fff0-f728f60f065b\", \"checkpoint_ns\": \"tools:5ae50f57-5a36-74b8-fff0-f728f60f065b\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "TOOL"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "7ac5bb846a72eec9",
+              "parentSpanId": "a1f5f34285226435",
+              "name": "tools",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098586900992",
+              "endTimeUnixNano": "1778006098589016064",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"__type\": \"tool_call_with_context\", \"tool_call\": {\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}, \"state\": {\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}], \"remaining_steps\": 10006}}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": null, \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 2, \"langgraph_node\": \"tools\", \"langgraph_triggers\": [\"__pregel_push\"], \"langgraph_path\": [\"__pregel_push\", 0, false], \"langgraph_checkpoint_ns\": \"tools:5ae50f57-5a36-74b8-fff0-f728f60f065b\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "b1c6e1edc8ae6e75",
+              "parentSpanId": "ebfb8e8a65962a11",
+              "name": "Prompt",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098590565888",
+              "endTimeUnixNano": "1778006098590675200",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}], \"remaining_steps\": 10004}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "[{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}]"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\", \"checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "7b752a752a40a777",
+              "parentSpanId": "ebfb8e8a65962a11",
+              "name": "ChatOpenAI",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098591360000",
+              "endTimeUnixNano": "1778006100253509888",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [[{\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"HumanMessage\"], \"kwargs\": {\"content\": \"What's the weather in San Francisco?\", \"type\": \"human\", \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"AIMessage\"], \"kwargs\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}, \"invalid_tool_calls\": []}}, {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"ToolMessage\"], \"kwargs\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"status\": \"success\"}}]]}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"generations\": [[{\"text\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"generation_info\": {\"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ChatGeneration\", \"message\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"AIMessage\"], \"kwargs\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}, \"tool_calls\": [], \"invalid_tool_calls\": []}}}]], \"llm_output\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\"}, \"run\": null, \"type\": \"LLMResult\"}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.1.message.role",
+                  "value": {
+                    "stringValue": "assistant"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.1.message.tool_calls.0.tool_call.id",
+                  "value": {
+                    "stringValue": "call_TiDgkxCIzQz5Qsja4gDNEwBW"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.1.message.tool_calls.0.tool_call.function.name",
+                  "value": {
+                    "stringValue": "get_weather"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.1.message.tool_calls.0.tool_call.function.arguments",
+                  "value": {
+                    "stringValue": "{\"city\": \"San Francisco\"}"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.2.message.role",
+                  "value": {
+                    "stringValue": "tool"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.2.message.content",
+                  "value": {
+                    "stringValue": "The weather in San Francisco is sunny, 72F."
+                  }
+                },
+                {
+                  "key": "llm.input_messages.2.message.tool_call_id",
+                  "value": {
+                    "stringValue": "call_TiDgkxCIzQz5Qsja4gDNEwBW"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.2.message.name",
+                  "value": {
+                    "stringValue": "get_weather"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.role",
+                  "value": {
+                    "stringValue": "assistant"
+                  }
+                },
+                {
+                  "key": "llm.output_messages.0.message.content",
+                  "value": {
+                    "stringValue": "The weather in San Francisco is sunny with a temperature of 72°F."
+                  }
+                },
+                {
+                  "key": "llm.invocation_parameters",
+                  "value": {
+                    "stringValue": "{\"model\": \"gpt-4o-mini\", \"model_name\": \"gpt-4o-mini\", \"stream\": false, \"temperature\": 0.0, \"_type\": \"openai-chat\", \"stop\": null, \"tools\": [{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Get the current weather for a city.\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"string\"}}, \"required\": [\"city\"], \"type\": \"object\"}}}]}"
+                  }
+                },
+                {
+                  "key": "llm.tools.0.tool.json_schema",
+                  "value": {
+                    "stringValue": "{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Get the current weather for a city.\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"string\"}}, \"required\": [\"city\"], \"type\": \"object\"}}}"
+                  }
+                },
+                {
+                  "key": "llm.provider",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "llm.system",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "llm.model_name",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt",
+                  "value": {
+                    "intValue": "87"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "llm.token_count.total",
+                  "value": {
+                    "intValue": "103"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion_details.audio",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.completion_details.reasoning",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt_details.audio",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "llm.token_count.prompt_details.cache_read",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langchain_chat_model\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\", \"checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\", \"ls_provider\": \"openai\", \"ls_model_name\": \"gpt-4o-mini\", \"ls_model_type\": \"chat\", \"ls_temperature\": 0.0}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "LLM"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "ebfb8e8a65962a11",
+              "parentSpanId": "e236bea08e60adbd",
+              "name": "RunnableSequence",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098590418944",
+              "endTimeUnixNano": "1778006100254715904",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}], \"remaining_steps\": 10004}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"type\": \"ai\", \"data\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"tool_calls\": [], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\", \"checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "9d9ac44bbf5ef410",
+              "parentSpanId": "e236bea08e60adbd",
+              "name": "call_model",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098590065920",
+              "endTimeUnixNano": "1778006100255280128",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}], \"remaining_steps\": 10004}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"ai\", \"data\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"tool_calls\": [], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "ad8c56c64d0eca89",
+              "parentSpanId": "e236bea08e60adbd",
+              "name": "should_continue",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006100255773952",
+              "endTimeUnixNano": "1778006100255948032",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"tool_calls\": [], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}], \"remaining_steps\": 10004}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "__end__"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "e236bea08e60adbd",
+              "parentSpanId": "a1f5f34285226435",
+              "name": "agent",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006098589858048",
+              "endTimeUnixNano": "1778006100256158208",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}], \"remaining_steps\": 10004}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"ai\", \"data\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"tool_calls\": [], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\", \"langgraph_step\": 3, \"langgraph_node\": \"agent\", \"langgraph_triggers\": [\"branch:to:agent\"], \"langgraph_path\": [\"__pregel_pull\", \"agent\"], \"langgraph_checkpoint_ns\": \"agent:1a91141a-7259-3717-1e1b-592092e86f58\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "AGENT"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            },
+            {
+              "traceId": "aec23c399e61072d3434789ab8e16fd8",
+              "spanId": "a1f5f34285226435",
+              "parentSpanId": "",
+              "name": "LangGraph",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1778006096768402944",
+              "endTimeUnixNano": "1778006100256459008",
+              "attributes": [
+                {
+                  "key": "input.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [[\"user\", \"What's the weather in San Francisco?\"]]}"
+                  }
+                },
+                {
+                  "key": "input.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "output.value",
+                  "value": {
+                    "stringValue": "{\"messages\": [{\"type\": \"human\", \"data\": {\"content\": \"What's the weather in San Francisco?\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"human\", \"name\": null, \"id\": \"b3f58814-c428-4232-9c71-df10097d0790\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 15, \"prompt_tokens\": 52, \"total_tokens\": 67, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEteCi1NFt16tf8yJjpIdV9c0DOZ\", \"service_tier\": \"default\", \"finish_reason\": \"tool_calls\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96b-fb82-7e81-b0a6-d02b3886c6d1-0\", \"tool_calls\": [{\"name\": \"get_weather\", \"args\": {\"city\": \"San Francisco\"}, \"id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"type\": \"tool_call\"}], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 52, \"output_tokens\": 15, \"total_tokens\": 67, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}, {\"type\": \"tool\", \"data\": {\"content\": \"The weather in San Francisco is sunny, 72F.\", \"additional_kwargs\": {}, \"response_metadata\": {}, \"type\": \"tool\", \"name\": \"get_weather\", \"id\": \"63c5ffd3-f477-49f2-85bf-3a8b8e05e3e8\", \"tool_call_id\": \"call_TiDgkxCIzQz5Qsja4gDNEwBW\", \"artifact\": null, \"status\": \"success\"}}, {\"type\": \"ai\", \"data\": {\"content\": \"The weather in San Francisco is sunny with a temperature of 72°F.\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 16, \"prompt_tokens\": 87, \"total_tokens\": 103, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6f731aea6a\", \"id\": \"chatcmpl-DcEtfsOPBnq52tPfBpr4QL6JusDfl\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"name\": null, \"id\": \"lc_run--019df96c-029f-7610-8e15-1a268b18d7aa-0\", \"tool_calls\": [], \"invalid_tool_calls\": [], \"usage_metadata\": {\"input_tokens\": 87, \"output_tokens\": 16, \"total_tokens\": 103, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}}}]}"
+                  }
+                },
+                {
+                  "key": "output.mime_type",
+                  "value": {
+                    "stringValue": "application/json"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.role",
+                  "value": {
+                    "stringValue": "user"
+                  }
+                },
+                {
+                  "key": "llm.input_messages.0.message.content",
+                  "value": {
+                    "stringValue": "What's the weather in San Francisco?"
+                  }
+                },
+                {
+                  "key": "metadata",
+                  "value": {
+                    "stringValue": "{\"ls_integration\": \"langgraph\"}"
+                  }
+                },
+                {
+                  "key": "openinference.span.kind",
+                  "value": {
+                    "stringValue": "CHAIN"
+                  }
+                }
+              ],
+              "events": [],
+              "links": [],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
