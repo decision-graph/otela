@@ -6,9 +6,8 @@ to the repo. If a fixture is missing the corresponding test class is
 skipped rather than failing — this lets contributors who haven't
 regenerated fixtures still run the suite.
 
-Synthetic fixtures (under `tests/fixtures/synthetic/`) verify the spec;
-these tests verify that the spec survives contact with what real SDKs
-actually emit.
+Synthetic fixtures (under `examples/`) verify the spec; these tests
+verify that the spec survives contact with what real SDKs actually emit.
 
 Each SDK's tests are grouped in their own class with their own skip
 mark, so a missing LangGraph fixture doesn't affect ADK tests and

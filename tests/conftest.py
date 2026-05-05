@@ -2,24 +2,28 @@ from pathlib import Path
 
 import pytest
 
-# Synthetic spec fixtures live under fixtures/synthetic/. Real-trace
-# fixtures (generated from production SDKs) live under fixtures/real/
-# and are used only by tests/test_real_traces.py — keeping them in a
-# separate tree means the directory-load tests below don't accidentally
-# ingest them and break with off-by-N row counts.
-SYNTHETIC = Path(__file__).parent / "fixtures" / "synthetic"
+# Synthetic spec fixtures double as the user-facing examples — they live at
+# the repo root under `examples/` so the README quickstart can link to them
+# at a short, conventional path.
+#
+# Real-trace fixtures (generated from production SDKs by
+# scripts/generate_fixtures.py) stay under tests/fixtures/real/ and are
+# used only by tests/test_real_traces.py. Keeping the two trees separate
+# means the directory-load tests don't accidentally ingest a real fixture
+# and break with off-by-N row counts.
+EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
 
 
 @pytest.fixture
 def openinference_path() -> Path:
-    return SYNTHETIC / "openinference_sample.json"
+    return EXAMPLES / "sample.json"
 
 
 @pytest.fixture
 def otel_genai_path() -> Path:
-    return SYNTHETIC / "otel_genai_sample.json"
+    return EXAMPLES / "sample_genai.json"
 
 
 @pytest.fixture
 def fixtures_dir() -> Path:
-    return SYNTHETIC
+    return EXAMPLES

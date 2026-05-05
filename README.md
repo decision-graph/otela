@@ -9,6 +9,35 @@ OpenInference and OTel GenAI semantic conventions and gives you a single
 uniform schema you can run cross-trace analytics, dashboards, ML data
 prep, and context-graph builds against.
 
+## Try it (no install)
+
+Grab a sample OTel agent trace and run otela's CLI against it via `uvx` —
+nothing gets installed permanently:
+
+```bash
+curl -sL https://raw.githubusercontent.com/zach-blumenfeld/otela/main/examples/sample.json \
+  -o trace.json
+
+uvx otela totables trace.json otela-out
+```
+
+This writes one Parquet file per table:
+
+```
+otela-out/
+├── traces.parquet      # one row per trace (rollup)
+├── spans.parquet       # one row per span
+├── messages.parquet    # LLM messages, joinable on (trace_id, span_id)
+├── documents.parquet   # retrieved docs from RETRIEVER spans
+└── links.parquet       # OTel span links
+```
+
+Want nested-record output instead?
+
+```bash
+uvx otela torecords trace.json otela-records --format jsonl
+```
+
 ## Install
 
 ```bash

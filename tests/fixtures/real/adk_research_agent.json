@@ -37,13 +37,13 @@
           },
           "spans": [
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "4459e606ab4db46e",
-              "parentSpanId": "d5cc4866aecbcae7",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "c51b91868ff4765f",
+              "parentSpanId": "20dcb96eda7f3bad",
               "name": "execute_tool get_weather",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008244356074000",
-              "endTimeUnixNano": "1778008244356294000",
+              "startTimeUnixNano": "1778014668086851000",
+              "endTimeUnixNano": "1778014668087255000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -90,13 +90,13 @@
                 {
                   "key": "gen_ai.tool.call.id",
                   "value": {
-                    "stringValue": "call_h87BKZtbublLG6JmO4mDBjnG"
+                    "stringValue": "call_T1oDUN63614QfJn8UjBreDXZ"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.event_id",
                   "value": {
-                    "stringValue": "23f2d989-a405-4362-8bca-3604709fc896"
+                    "stringValue": "e0e0b2a0-1c54-4a20-bdee-877e692200ce"
                   }
                 },
                 {
@@ -113,13 +113,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "d5cc4866aecbcae7",
-              "parentSpanId": "831707c97b707afb",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "20dcb96eda7f3bad",
+              "parentSpanId": "6bfc238d73935755",
               "name": "generate_content openai/gpt-4o-mini",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008239793599000",
-              "endTimeUnixNano": "1778008244356464000",
+              "startTimeUnixNano": "1778014663663911000",
+              "endTimeUnixNano": "1778014668087448000",
               "attributes": [
                 {
                   "key": "gen_ai.system",
@@ -148,7 +148,7 @@
                 {
                   "key": "gen_ai.conversation.id",
                   "value": {
-                    "stringValue": "f14799b4-48b1-47b5-90f1-6f097958f0a9"
+                    "stringValue": "6f77a16d-8bde-4938-b09c-448e2eddf89d"
                   }
                 },
                 {
@@ -160,13 +160,13 @@
                 {
                   "key": "gcp.vertex.agent.event_id",
                   "value": {
-                    "stringValue": "a072143e-50ef-4172-b8a0-5df1420de3ba"
+                    "stringValue": "6a2f910b-ed3b-4274-bf77-47acb34a4ba9"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.invocation_id",
                   "value": {
-                    "stringValue": "e-8081cd20-925c-4a0b-a6ab-4bfde2e420a1"
+                    "stringValue": "e-e9103d94-06ec-4805-8ade-8fe62d29c138"
                   }
                 },
                 {
@@ -201,13 +201,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "831707c97b707afb",
-              "parentSpanId": "713bcd532abc080a",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "6bfc238d73935755",
+              "parentSpanId": "e687bd34a81fc5b6",
               "name": "call_llm",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008239793516000",
-              "endTimeUnixNano": "1778008244356506000",
+              "startTimeUnixNano": "1778014663663829000",
+              "endTimeUnixNano": "1778014668087482000",
               "attributes": [
                 {
                   "key": "gen_ai.system",
@@ -224,19 +224,19 @@
                 {
                   "key": "gcp.vertex.agent.invocation_id",
                   "value": {
-                    "stringValue": "e-8081cd20-925c-4a0b-a6ab-4bfde2e420a1"
+                    "stringValue": "e-e9103d94-06ec-4805-8ade-8fe62d29c138"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.session_id",
                   "value": {
-                    "stringValue": "f14799b4-48b1-47b5-90f1-6f097958f0a9"
+                    "stringValue": "6f77a16d-8bde-4938-b09c-448e2eddf89d"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.event_id",
                   "value": {
-                    "stringValue": "a072143e-50ef-4172-b8a0-5df1420de3ba"
+                    "stringValue": "6a2f910b-ed3b-4274-bf77-47acb34a4ba9"
                   }
                 },
                 {
@@ -248,7 +248,7 @@
                 {
                   "key": "gcp.vertex.agent.llm_response",
                   "value": {
-                    "stringValue": "{\"model_version\":\"gpt-4o-mini-2024-07-18\",\"content\":{\"parts\":[{\"function_call\":{\"id\":\"call_h87BKZtbublLG6JmO4mDBjnG\",\"args\":{\"city\":\"San Francisco\"},\"name\":\"get_weather\"}}],\"role\":\"model\"},\"partial\":false,\"finish_reason\":\"STOP\",\"usage_metadata\":{\"cached_content_token_count\":0,\"candidates_token_count\":15,\"prompt_token_count\":140,\"total_token_count\":155}}"
+                    "stringValue": "{\"model_version\":\"gpt-4o-mini-2024-07-18\",\"content\":{\"parts\":[{\"function_call\":{\"id\":\"call_T1oDUN63614QfJn8UjBreDXZ\",\"args\":{\"city\":\"San Francisco\"},\"name\":\"get_weather\"}}],\"role\":\"model\"},\"partial\":false,\"finish_reason\":\"STOP\",\"usage_metadata\":{\"cached_content_token_count\":0,\"candidates_token_count\":15,\"prompt_token_count\":140,\"total_token_count\":155}}"
                   }
                 },
                 {
@@ -283,13 +283,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "4d29afea7c203bf9",
-              "parentSpanId": "9b6d4027d8e05a2a",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "52404ebaad0d1e46",
+              "parentSpanId": "119a7b15f2fc652b",
               "name": "generate_content openai/gpt-4o-mini",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008244358213000",
-              "endTimeUnixNano": "1778008245677912000",
+              "startTimeUnixNano": "1778014668089109000",
+              "endTimeUnixNano": "1778014669483500000",
               "attributes": [
                 {
                   "key": "gen_ai.system",
@@ -318,7 +318,7 @@
                 {
                   "key": "gen_ai.conversation.id",
                   "value": {
-                    "stringValue": "f14799b4-48b1-47b5-90f1-6f097958f0a9"
+                    "stringValue": "6f77a16d-8bde-4938-b09c-448e2eddf89d"
                   }
                 },
                 {
@@ -330,13 +330,13 @@
                 {
                   "key": "gcp.vertex.agent.event_id",
                   "value": {
-                    "stringValue": "473aeccc-bb87-45b2-b6d5-bbf520b85e64"
+                    "stringValue": "32e66799-371d-46a8-bed2-5a70932071b3"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.invocation_id",
                   "value": {
-                    "stringValue": "e-8081cd20-925c-4a0b-a6ab-4bfde2e420a1"
+                    "stringValue": "e-e9103d94-06ec-4805-8ade-8fe62d29c138"
                   }
                 },
                 {
@@ -371,13 +371,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "9b6d4027d8e05a2a",
-              "parentSpanId": "713bcd532abc080a",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "119a7b15f2fc652b",
+              "parentSpanId": "e687bd34a81fc5b6",
               "name": "call_llm",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008244358129000",
-              "endTimeUnixNano": "1778008245677982000",
+              "startTimeUnixNano": "1778014668089035000",
+              "endTimeUnixNano": "1778014669483526000",
               "attributes": [
                 {
                   "key": "gen_ai.system",
@@ -394,25 +394,25 @@
                 {
                   "key": "gcp.vertex.agent.invocation_id",
                   "value": {
-                    "stringValue": "e-8081cd20-925c-4a0b-a6ab-4bfde2e420a1"
+                    "stringValue": "e-e9103d94-06ec-4805-8ade-8fe62d29c138"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.session_id",
                   "value": {
-                    "stringValue": "f14799b4-48b1-47b5-90f1-6f097958f0a9"
+                    "stringValue": "6f77a16d-8bde-4938-b09c-448e2eddf89d"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.event_id",
                   "value": {
-                    "stringValue": "473aeccc-bb87-45b2-b6d5-bbf520b85e64"
+                    "stringValue": "32e66799-371d-46a8-bed2-5a70932071b3"
                   }
                 },
                 {
                   "key": "gcp.vertex.agent.llm_request",
                   "value": {
-                    "stringValue": "{\"model\": \"openai/gpt-4o-mini\", \"config\": {\"system_instruction\": \"You are a helpful weather assistant. Use the get_weather tool to look up weather for any city the user asks about. Reply concisely with the result.\\n\\nYou are an agent. Your internal name is \\\"weather_agent\\\". The description about you is \\\"A weather assistant for fixture generation.\\\".\", \"tools\": [{\"function_declarations\": [{\"description\": \"Get the current weather for a city.\\n\\n        Args:\\n            city: The name of the city to look up.\\n\\n        Returns:\\n            A dict with `city`, `weather`, and `temperature_f`.\\n        \", \"name\": \"get_weather\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"STRING\"}}, \"required\": [\"city\"], \"type\": \"OBJECT\"}}]}], \"labels\": {\"adk_agent_name\": \"weather_agent\"}}, \"contents\": [{\"parts\": [{\"text\": \"What's the weather in San Francisco?\"}], \"role\": \"user\"}, {\"parts\": [{\"function_call\": {\"id\": \"call_h87BKZtbublLG6JmO4mDBjnG\", \"args\": {\"city\": \"San Francisco\"}, \"name\": \"get_weather\"}}], \"role\": \"model\"}, {\"parts\": [{\"function_response\": {\"id\": \"call_h87BKZtbublLG6JmO4mDBjnG\", \"name\": \"get_weather\", \"response\": {\"city\": \"San Francisco\", \"weather\": \"sunny\", \"temperature_f\": 72}}}], \"role\": \"user\"}]}"
+                    "stringValue": "{\"model\": \"openai/gpt-4o-mini\", \"config\": {\"system_instruction\": \"You are a helpful weather assistant. Use the get_weather tool to look up weather for any city the user asks about. Reply concisely with the result.\\n\\nYou are an agent. Your internal name is \\\"weather_agent\\\". The description about you is \\\"A weather assistant for fixture generation.\\\".\", \"tools\": [{\"function_declarations\": [{\"description\": \"Get the current weather for a city.\\n\\n        Args:\\n            city: The name of the city to look up.\\n\\n        Returns:\\n            A dict with `city`, `weather`, and `temperature_f`.\\n        \", \"name\": \"get_weather\", \"parameters\": {\"properties\": {\"city\": {\"type\": \"STRING\"}}, \"required\": [\"city\"], \"type\": \"OBJECT\"}}]}], \"labels\": {\"adk_agent_name\": \"weather_agent\"}}, \"contents\": [{\"parts\": [{\"text\": \"What's the weather in San Francisco?\"}], \"role\": \"user\"}, {\"parts\": [{\"function_call\": {\"id\": \"call_T1oDUN63614QfJn8UjBreDXZ\", \"args\": {\"city\": \"San Francisco\"}, \"name\": \"get_weather\"}}], \"role\": \"model\"}, {\"parts\": [{\"function_response\": {\"id\": \"call_T1oDUN63614QfJn8UjBreDXZ\", \"name\": \"get_weather\", \"response\": {\"city\": \"San Francisco\", \"weather\": \"sunny\", \"temperature_f\": 72}}}], \"role\": \"user\"}]}"
                   }
                 },
                 {
@@ -453,13 +453,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "713bcd532abc080a",
-              "parentSpanId": "14efb5bcf3b6017b",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "e687bd34a81fc5b6",
+              "parentSpanId": "dadf1fdc996d6aae",
               "name": "invoke_agent weather_agent",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008239592066000",
-              "endTimeUnixNano": "1778008245678076000",
+              "startTimeUnixNano": "1778014663498555000",
+              "endTimeUnixNano": "1778014669483585000",
               "attributes": [
                 {
                   "key": "gen_ai.operation.name",
@@ -482,7 +482,7 @@
                 {
                   "key": "gen_ai.conversation.id",
                   "value": {
-                    "stringValue": "f14799b4-48b1-47b5-90f1-6f097958f0a9"
+                    "stringValue": "6f77a16d-8bde-4938-b09c-448e2eddf89d"
                   }
                 }
               ],
@@ -493,13 +493,13 @@
               }
             },
             {
-              "traceId": "c66dcca0a5a143ece8d6e39177537eca",
-              "spanId": "14efb5bcf3b6017b",
+              "traceId": "bce65180fece096081d67aaef26a2677",
+              "spanId": "dadf1fdc996d6aae",
               "parentSpanId": "",
               "name": "invocation",
               "kind": "SPAN_KIND_INTERNAL",
-              "startTimeUnixNano": "1778008239591798000",
-              "endTimeUnixNano": "1778008245678170000",
+              "startTimeUnixNano": "1778014663498362000",
+              "endTimeUnixNano": "1778014669483645000",
               "attributes": [],
               "events": [],
               "links": [],
