@@ -1,4 +1,4 @@
-"""otela — OpenTelemetry analytics & data formatting for agent traces."""
+"""otela — Format OpenTelemetry agent traces for analytics, ML, and context graphs."""
 
 from __future__ import annotations
 

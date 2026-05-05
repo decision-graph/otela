@@ -51,7 +51,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="otela",
-        description="OpenTelemetry analytics & data formatting for agent traces.",
+        description="Format OpenTelemetry agent traces for analytics, ML, and context graphs.",
     )
     sub = parser.add_subparsers(dest="command")
 

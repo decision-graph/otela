@@ -1,12 +1,13 @@
 # otela
 
-OpenTelemetry (Otel) Analytics and Data Formatting, Focused on Agent Traces.
+Format OpenTelemetry agent traces for analytics, ML, and context graphs.
 
-`otela` reads raw OpenTelemetry traces and emits analytics-ready data in
-whatever shape you need: Arrow tables, Parquet, Pandas, nested JSON
-records, or PyTorch tensors. It auto-detects between OpenInference and
-OTel GenAI semantic conventions and gives you a single uniform schema you
-can run cross-trace analytics, dashboards, and ML data prep against.
+`otela` (OTel + analytics) reads raw OTel traces (OTLP/JSON) and emits
+analytics-ready data in whatever shape you need: Arrow tables, Parquet,
+Pandas, nested JSON records, or PyTorch tensors. It auto-detects between
+OpenInference and OTel GenAI semantic conventions and gives you a single
+uniform schema you can run cross-trace analytics, dashboards, ML data
+prep, and context-graph builds against.
 
 ## Install
 
