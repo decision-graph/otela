@@ -2,14 +2,49 @@
 name = "otela"
 version = "0.1.0"
 description = "Format OpenTelemetry agent traces for analytics, ML, and context graphs"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 authors = [
-    { name = "zach-blumenfeld", email = "zach.blumenfeld@neo4j.com" }
+    { name = "Zach Blumenfeld", email = "zach.blumenfeld@neo4j.com" },
 ]
 requires-python = ">=3.11"
+keywords = [
+    "opentelemetry",
+    "otel",
+    "agent",
+    "traces",
+    "observability",
+    "llm",
+    "agentic",
+    "openinference",
+    "analytics",
+    "parquet",
+    "arrow",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Logging",
+    "Typing :: Typed",
+]
 dependencies = [
     "pyarrow>=15.0.0",
     "orjson>=3.10.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/zach-blumenfeld/otela"
+Repository = "https://github.com/zach-blumenfeld/otela"
+Issues = "https://github.com/zach-blumenfeld/otela/issues"
 
 [project.scripts]
 otela = "otela.cli:main"
@@ -41,8 +76,22 @@ fixtures = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+# 1.26+ supports PEP 639 license / license-files.
+requires = ["hatchling>=1.26"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Tests, scripts, and committed fixtures are repo-only — keep them out of
+# the wheel that goes to PyPI.
+packages = ["src/otela"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/otela",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
 
 [tool.ruff]
 line-length = 100
