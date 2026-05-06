@@ -1,8 +1,12 @@
-"""Agent-trace (at/v1) normalizer.
+"""Agent-trace (at/v2) normalizer.
 
 Reads a `RawSpan` (an OTLP span plus resource/scope context) and emits a
 `NormalizedSpan`: the canonical row that the spans table is built from, plus
 optional side records for messages, documents, and links.
+
+Session detection is independent of convention detection: see
+`_detect_session_id` for the precedence list across OTel GenAI,
+OpenInference, ADK, Vercel, MLflow, and Traceloop.
 
 Convention handling
 -------------------
@@ -112,6 +116,7 @@ class NormalizedSpan:
     service_name: str | None
     scope_name: str | None
     scope_version: str | None
+    session_id: str | None
     model_name: str | None
     tool_name: str | None
     agent_name: str | None
@@ -128,13 +133,14 @@ class NormalizedSpan:
 
 
 def normalize_span(raw: RawSpan) -> NormalizedSpan:
-    """Normalize one OTLP span into the at/v1 canonical shape."""
+    """Normalize one OTLP span into the at/v2 canonical shape."""
     span = raw.span
     attrs = attributes_to_dict(span.get("attributes"))
     events = span.get("events") or []
 
     convention = _detect_convention(attrs, events)
     consumed: set[str] = set()
+    session_id = _detect_session_id(attrs, consumed)
 
     if convention == CONV_OPENINFERENCE:
         extracted = _extract_openinference(attrs, consumed)
@@ -197,6 +203,7 @@ def normalize_span(raw: RawSpan) -> NormalizedSpan:
         service_name=service_name,
         scope_name=raw.scope_name,
         scope_version=raw.scope_version,
+        session_id=session_id,
         model_name=extracted.model_name,
         tool_name=extracted.tool_name,
         agent_name=extracted.agent_name,
@@ -211,6 +218,41 @@ def normalize_span(raw: RawSpan) -> NormalizedSpan:
         documents=extracted.documents,
         links=links,
     )
+
+
+# ---------------------------------------------------------------------------
+# Session detection
+# ---------------------------------------------------------------------------
+
+
+# Source-attribute keys carrying a session/conversation identifier, in
+# precedence order. The first key present in the span's attributes wins.
+# OTel GenAI is preferred over OpenInference because it's the official
+# upstream spec; the others are vendor-specific or alternates that share
+# the same semantic.
+_SESSION_ID_KEYS: tuple[str, ...] = (
+    "gen_ai.conversation.id",
+    "session.id",
+    "gcp.vertex.agent.session_id",
+    "ai.telemetry.metadata.sessionId",
+    "mlflow.trace.session",
+    "traceloop.association.properties.session_id",
+)
+
+
+def _detect_session_id(attrs: dict[str, Any], consumed: set[str]) -> str | None:
+    """Pick a session id from any recognized source attribute.
+
+    Adds the matched key to `consumed` so it is not duplicated into
+    `raw_attributes_json`. Empty strings are treated as not-present.
+    """
+    for key in _SESSION_ID_KEYS:
+        if key in attrs:
+            value = _coerce_text(attrs[key])
+            consumed.add(key)
+            if value:
+                return value
+    return None
 
 
 # ---------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 
 Subcommands:
 
-    otela totables  INPUT OUTPUT_DIR [--format parquet|csv|arrow|json|jsonl] [--spec at/v1]
-    otela torecords INPUT OUTPUT_DIR [--format json|jsonl] [--spec at/v1]
+    otela totables  INPUT OUTPUT_DIR [--format parquet|csv|arrow|json|jsonl] [--spec at/v2]
+    otela torecords INPUT OUTPUT_DIR [--format json|jsonl] [--spec at/v2]
 
 `totables` writes one file per table (spans, messages, documents, links,
 traces). Parquet streams to disk with bounded memory; the other formats
@@ -69,8 +69,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     totables.add_argument(
         "--spec",
-        default="at/v1",
-        help="Spec/version to apply (default: at/v1).",
+        default="at/v2",
+        help="Spec/version to apply (default: at/v2).",
     )
     totables.add_argument(
         "--batch-size",
@@ -98,8 +98,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     torecords.add_argument(
         "--spec",
-        default="at/v1",
-        help="Spec/version to apply (default: at/v1).",
+        default="at/v2",
+        help="Spec/version to apply (default: at/v2).",
     )
 
     return parser

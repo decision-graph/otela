@@ -56,9 +56,11 @@ def test_empty_tables_have_correct_schema():
 def test_to_dfs_returns_pandas(fixtures_dir):
     t = otela.load(fixtures_dir)
     dfs = otela.to_dfs(t)
-    assert set(dfs.keys()) == {"spans", "messages", "documents", "links", "traces"}
+    assert set(dfs.keys()) == {"spans", "messages", "documents", "links", "traces", "sessions"}
     assert len(dfs["spans"]) == 13
     assert len(dfs["traces"]) == 2
+    # Both fixtures carry distinct session_ids; one row per session.
+    assert len(dfs["sessions"]) == 2
 
 
 def test_int_columns_preserve_nullability(fixtures_dir):

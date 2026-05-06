@@ -1,12 +1,16 @@
 """Generate a real Google ADK agent trace as an otela fixture.
 
-Drives Google's Agent Development Kit (ADK) through one tool-using
-conversation and captures the OTel GenAI semconv spans it emits. Uses
-LiteLLM to route to OpenAI under the hood so the script doesn't require
-GCP, Vertex AI, or a Gemini API key — your existing `OPENAI_API_KEY`
-suffices. ADK's OTel instrumentation lives in its agent/runner/tool
-layer, so the same `gen_ai.*` attributes and span events get emitted
-regardless of which model backend serves the request.
+Drives Google's Agent Development Kit (ADK) through three tool-using
+turns in one session and captures the OTel GenAI semconv spans it
+emits. Uses LiteLLM to route to OpenAI under the hood so the script
+doesn't require GCP, Vertex AI, or a Gemini API key — your existing
+`OPENAI_API_KEY` suffices. ADK's OTel instrumentation lives in its
+agent/runner/tool layer, so the same `gen_ai.*` attributes and span
+events get emitted regardless of which model backend serves the request.
+
+ADK tags every span with `gcp.vertex.agent.session_id`. Running three
+turns against one session id lets the fixture exercise at/v2's
+multi-turn `session_turn` ordering and the sessions rollup.
 
 Usage
 -----
@@ -16,12 +20,12 @@ Usage
 
 Why this exists
 ---------------
-Our synthetic `otel_genai_sample.json` fixture covers the spec on paper.
-This fixture covers what a real SDK actually emits — span events for
-messages, `gen_ai.tool.call.id` correlation, ADK-specific attribute
-extensions, and any deviations from semconv that real implementations
-sneak in. If something here surprises us, that's exactly the value of
-testing against real output.
+Our synthetic `examples/sample_genai.json` fixture covers the spec on
+paper. This fixture covers what a real SDK actually emits — span events
+for messages, `gen_ai.tool.call.id` correlation, ADK-specific attribute
+extensions (including session_id propagation), and any deviations from
+semconv that real implementations sneak in. If something here surprises
+us, that's exactly the value of testing against real output.
 """
 
 from __future__ import annotations
@@ -43,6 +47,12 @@ DEFAULT_PROMPT = "What's the weather in San Francisco?"
 DEFAULT_MODEL = "openai/gpt-4o-mini"
 APP_NAME = "adk-weather-agent"
 USER_ID = "fixture-user"
+# Canned follow-ups so a single --prompt override still produces a
+# multi-turn fixture; tests assume `session_turn` is exercised.
+FOLLOWUP_PROMPTS = (
+    "How about in Tokyo?",
+    "Which of those two cities is warmer?",
+)
 
 
 def generate(
@@ -90,7 +100,10 @@ def generate(
         Returns:
             A dict with `city`, `weather`, and `temperature_f`.
         """
-        return {"city": city, "weather": "sunny", "temperature_f": 72}
+        # Different temperatures per city so the multi-turn comparison has
+        # something to answer with.
+        temps = {"San Francisco": 64, "Tokyo": 78}
+        return {"city": city, "weather": "sunny", "temperature_f": temps.get(city, 72)}
 
     # ---- Build the agent using LiteLLM-routed OpenAI.
     agent = LlmAgent(
@@ -106,29 +119,37 @@ def generate(
     )
 
     runner = InMemoryRunner(agent=agent, app_name=APP_NAME)
+    prompts = (prompt, *FOLLOWUP_PROMPTS)
 
-    async def _run() -> str:
+    async def _run() -> list[str]:
+        # One session, multiple turns. ADK propagates session.id onto every
+        # span via gcp.vertex.agent.session_id.
         session = await runner.session_service.create_session(
             app_name=APP_NAME, user_id=USER_ID
         )
-        message = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-        final_text: str | None = None
-        async for event in runner.run_async(
-            user_id=USER_ID,
-            session_id=session.id,
-            new_message=message,
-        ):
-            if event.is_final_response() and event.content and event.content.parts:
-                # The final response is the assistant's last message.
-                part = event.content.parts[0]
-                final_text = getattr(part, "text", None)
-        return final_text or "(no final response)"
+        finals: list[str] = []
+        for i, p in enumerate(prompts):
+            print(f"turn {i}: {p!r}")
+            message = types.Content(role="user", parts=[types.Part.from_text(text=p)])
+            final_text: str | None = None
+            async for event in runner.run_async(
+                user_id=USER_ID,
+                session_id=session.id,
+                new_message=message,
+            ):
+                if event.is_final_response() and event.content and event.content.parts:
+                    part = event.content.parts[0]
+                    final_text = getattr(part, "text", None)
+            print(f"  -> {(final_text or '(no final response)')!r}")
+            finals.append(final_text or "")
+        return finals
 
-    print(f"running ADK agent with prompt: {prompt!r}")
-    final = asyncio.run(_run())
-    print(f"agent response: {final!r}")
+    asyncio.run(_run())
 
     # ---- Flush.
     provider.shutdown()
-    print(f"wrote {exporter.num_spans_buffered} spans to {output_path}")
+    print(
+        f"wrote {exporter.num_spans_buffered} spans to {output_path} "
+        f"({len(prompts)} turns)"
+    )
     return output_path

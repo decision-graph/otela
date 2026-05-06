@@ -47,9 +47,18 @@ class TestLangGraphFixture:
     def test_loads_without_errors(self, tables):
         assert tables["spans"].num_rows > 0
 
-    def test_one_trace(self, tables):
-        """The fixture is a single agent invocation, so one trace."""
-        assert tables["traces"].num_rows == 1
+    def test_three_traces_one_session(self, tables):
+        """The fixture generator runs three prompts in one session, so we
+        expect three traces all sharing the same session_id."""
+        assert tables["traces"].num_rows == 3
+        sids = set(tables["traces"].column("session_id").to_pylist()) - {None}
+        assert len(sids) == 1, f"expected one session across the three turns, got {sids}"
+
+    def test_session_turns_are_0_1_2(self, tables):
+        """session_turn should rank the three traces 0, 1, 2 within the
+        single session."""
+        turns = sorted(tables["traces"].column("session_turn").to_pylist())
+        assert turns == [0, 1, 2]
 
     def test_convention_detected(self, tables):
         """LangChain instrumentation emits OpenInference attributes; nothing
@@ -113,6 +122,34 @@ class TestLangGraphFixture:
         services = set(tables["spans"].column("service_name").to_pylist())
         assert services == {"langgraph-research-agent"}
 
+    def test_session_id_extracted(self, tables):
+        """The fixture generator runs the agent under a session context, so
+        session.id should propagate to every span. Pre-v0.2.0 fixtures
+        predate session instrumentation; skip rather than fail in that case
+        — regenerate with `scripts/generate_fixtures.py langgraph` to enable."""
+        sids = set(tables["spans"].column("session_id").to_pylist()) - {None}
+        if not sids:
+            pytest.skip(
+                "fixture predates session instrumentation; regenerate with "
+                "`uv run python scripts/generate_fixtures.py langgraph` to enable."
+            )
+        assert sids
+
+    def test_session_turn_assigned(self, tables):
+        """Every trace with a session_id should also have a session_turn."""
+        traces = tables["traces"].to_pandas()
+        with_session = traces.dropna(subset=["session_id"])
+        if len(with_session) == 0:
+            pytest.skip("no session_id in fixture; see test_session_id_extracted")
+        assert with_session["session_turn"].notna().all()
+
+    def test_sessions_rollup_present(self, tables):
+        """If session_id was extracted, the sessions rollup should have at
+        least one row."""
+        if tables["traces"].column("session_id").null_count == tables["traces"].num_rows:
+            return  # no sessions in this trace
+        assert tables["sessions"].num_rows >= 1
+
 
 # ---------------------------------------------------------------------------
 # Google ADK (OTel GenAI semconv via LiteLLM bridge)
@@ -134,8 +171,16 @@ class TestADKFixture:
     def test_loads_without_errors(self, tables):
         assert tables["spans"].num_rows > 0
 
-    def test_one_trace(self, tables):
-        assert tables["traces"].num_rows == 1
+    def test_three_traces_one_session(self, tables):
+        """The fixture generator runs three prompts in one session, so we
+        expect three traces all sharing the same session_id."""
+        assert tables["traces"].num_rows == 3
+        sids = set(tables["traces"].column("session_id").to_pylist()) - {None}
+        assert len(sids) == 1, f"expected one session across the three turns, got {sids}"
+
+    def test_session_turns_are_0_1_2(self, tables):
+        turns = sorted(tables["traces"].column("session_turn").to_pylist())
+        assert turns == [0, 1, 2]
 
     def test_convention_is_otel_genai(self, tables):
         """ADK emits gen_ai.* attributes natively, so most spans should be
@@ -188,3 +233,24 @@ class TestADKFixture:
     def test_service_name_propagated(self, tables):
         services = set(tables["spans"].column("service_name").to_pylist())
         assert services == {"adk-weather-agent"}
+
+    def test_session_id_extracted(self, tables):
+        """ADK emits `gcp.vertex.agent.session_id` on its agent spans —
+        otela's detector should promote it into the session_id column."""
+        sids = set(tables["spans"].column("session_id").to_pylist()) - {None}
+        assert sids, "no span carried session_id; ADK gcp.vertex.agent.session_id detection may have regressed"
+
+    def test_session_id_promoted_out_of_raw_attrs(self, tables):
+        """Once promoted, the source attribute must be removed from
+        raw_attributes_json (no double-storage)."""
+        import orjson
+
+        spans = tables["spans"].to_pandas()
+        for raw in spans["raw_attributes_json"].dropna():
+            decoded = orjson.loads(raw)
+            assert "gcp.vertex.agent.session_id" not in decoded
+
+    def test_sessions_rollup_present(self, tables):
+        if tables["traces"].column("session_id").null_count == tables["traces"].num_rows:
+            return
+        assert tables["sessions"].num_rows >= 1
