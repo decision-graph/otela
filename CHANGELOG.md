@@ -5,6 +5,14 @@ All notable changes to otela are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!--
+HEADING FORMAT IS LOAD-BEARING.
+The release workflow (.github/workflows/release.yml) extracts the body
+of the GitHub Release by awk-matching `## [X.Y.Z]` at the start of a
+line, up to the next `## [` heading. Keep version sections under that
+exact pattern. Editorial prose is fine; just don't change the heading.
+-->
+
 ## [0.2.0] — 2026-05-06
 
 `agent-trace` spec bumped to **`at/v2`**. The bump is driven by
