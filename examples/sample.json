@@ -20,6 +20,7 @@
               "endTimeUnixNano": "1714838408500000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "AGENT"}},
                 {"key": "agent.name", "value": {"stringValue": "research_agent"}},
                 {"key": "input.value", "value": {"stringValue": "What were the key findings of the 2026 AI Index Report?"}},
@@ -35,6 +36,7 @@
               "endTimeUnixNano": "1714838401500000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "LLM"}},
                 {"key": "llm.model_name", "value": {"stringValue": "gpt-4o"}},
                 {"key": "llm.token_count.prompt", "value": {"intValue": 245}},
@@ -57,6 +59,7 @@
               "endTimeUnixNano": "1714838403800000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "RETRIEVER"}},
                 {"key": "tool.name", "value": {"stringValue": "web_search"}},
                 {"key": "input.value", "value": {"stringValue": "Stanford HAI AI Index 2026 key findings"}},
@@ -77,6 +80,7 @@
               "endTimeUnixNano": "1714838403200000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "RETRIEVER"}},
                 {"key": "tool.name", "value": {"stringValue": "vector_db_query"}},
                 {"key": "input.value", "value": {"stringValue": "AI Index 2026 enterprise agent deployment statistics"}},
@@ -94,6 +98,7 @@
               "endTimeUnixNano": "1714838404100000000",
               "status": {"code": "STATUS_CODE_ERROR", "message": "rate limit exceeded"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "RETRIEVER"}},
                 {"key": "tool.name", "value": {"stringValue": "arxiv_search"}},
                 {"key": "input.value", "value": {"stringValue": "AI Index 2026 agent reliability"}}
@@ -108,6 +113,7 @@
               "endTimeUnixNano": "1714838408400000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "session.id", "value": {"stringValue": "research-session-001"}},
                 {"key": "openinference.span.kind", "value": {"stringValue": "LLM"}},
                 {"key": "llm.model_name", "value": {"stringValue": "gpt-4o"}},
                 {"key": "llm.token_count.prompt", "value": {"intValue": 1840}},

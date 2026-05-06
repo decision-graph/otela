@@ -7,6 +7,7 @@ from .schemas import (
     DOCUMENTS_SCHEMA,
     LINKS_SCHEMA,
     MESSAGES_SCHEMA,
+    SESSIONS_SCHEMA,
     SPANS_SCHEMA,
     SPEC,
     SPEC_VERSION,
@@ -14,12 +15,13 @@ from .schemas import (
 )
 from .tensors import TensorTable, to_tensors
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "DOCUMENTS_SCHEMA",
     "LINKS_SCHEMA",
     "MESSAGES_SCHEMA",
+    "SESSIONS_SCHEMA",
     "SPANS_SCHEMA",
     "SPEC",
     "SPEC_VERSION",

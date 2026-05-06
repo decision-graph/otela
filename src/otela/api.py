@@ -18,6 +18,7 @@ from .reader import RawSpan, iter_otlp_spans
 from .schemas import (
     ALL_TABLE_NAMES,
     SCHEMAS,
+    SESSIONS_TABLE_NAME,
     SPEC,
     SPEC_VERSION,
     TABLE_NAMES,
@@ -28,16 +29,17 @@ from .schemas import (
 def load(
     path: str | os.PathLike | Iterable[str | os.PathLike],
     *,
-    spec: str = "at/v1",
+    spec: str = "at/v2",
 ) -> dict[str, pa.Table]:
     """Load OTLP/JSON traces from `path` into Arrow tables.
 
     `path` may be a single file, a directory of OTLP/JSON files, or an
     iterable of either. Returns a dict with keys `spans`, `messages`,
-    `documents`, `links`, `traces` — all joinable on `trace_id` (and
-    `span_id` for the per-span side tables).
+    `documents`, `links`, `traces`, `sessions` — all joinable on
+    `trace_id` (and `span_id` for the per-span side tables; `session_id`
+    for sessions).
 
-    The `spec` argument is currently fixed at "at/v1"; the parameter
+    The `spec` argument is currently fixed at "at/v2"; the parameter
     is reserved for a future `wg/v1` workflow-graph spec.
     """
     _check_spec(spec)
@@ -46,13 +48,14 @@ def load(
         builder.add(normalize_span(raw))
     tables = builder.build()
     tables[TRACES_TABLE_NAME] = builder.build_traces()
+    tables[SESSIONS_TABLE_NAME] = builder.build_sessions()
     return tables
 
 
 def to_arrow(
     path: str | os.PathLike | Iterable[str | os.PathLike],
     *,
-    spec: str = "at/v1",
+    spec: str = "at/v2",
 ) -> dict[str, pa.Table]:
     """Alias for `load()`. Kept for symmetry with `to_dfs()`."""
     return load(path, spec=spec)
@@ -76,7 +79,7 @@ def to_parquet(
     path: str | os.PathLike | Iterable[str | os.PathLike],
     output_dir: str | os.PathLike,
     *,
-    spec: str = "at/v1",
+    spec: str = "at/v2",
     batch_size: int = 10_000,
     compression: str = "zstd",
     row_group_size: int | None = None,
@@ -89,6 +92,8 @@ def to_parquet(
         output_dir/messages.parquet
         output_dir/documents.parquet
         output_dir/links.parquet
+        output_dir/traces.parquet
+        output_dir/sessions.parquet
 
     Memory is bounded by `batch_size` (number of spans buffered before each
     flush). The same code path handles a 10 MB file and a 1 TB directory.
@@ -100,7 +105,7 @@ def to_parquet(
     output_dir
         Directory to write parquet files into. Created if missing.
     spec
-        Spec version (currently only `at/v1`).
+        Spec version (currently only `at/v2`).
     batch_size
         Spans per flush. Larger = bigger row groups, fewer flushes,
         more peak memory. 10k is a reasonable default.
@@ -120,8 +125,9 @@ def to_parquet(
     out.mkdir(parents=True, exist_ok=True)
     paths = {name: out / f"{name}.parquet" for name in ALL_TABLE_NAMES}
 
-    # Spans/messages/documents/links stream per batch. Traces is a rollup,
-    # written once at end-of-load from the builder's per-trace accumulators.
+    # Spans/messages/documents/links stream per batch. Traces and sessions
+    # are rollups, written once at end-of-load from the builder's
+    # per-trace accumulators.
     batch_writers: dict[str, pq.ParquetWriter] = {
         name: pq.ParquetWriter(paths[name], SCHEMAS[name], compression=compression)
         for name in TABLE_NAMES
@@ -138,12 +144,17 @@ def to_parquet(
         for w in batch_writers.values():
             w.close()
 
-    # Traces rollup written as a single table; its row count is bounded by
-    # the number of distinct trace_ids, which is much smaller than the
-    # number of spans.
+    # Rollups written as single tables; row counts are bounded by the
+    # number of distinct trace_ids / session_ids, which are much smaller
+    # than the number of spans.
     pq.write_table(
         builder.build_traces(),
         paths[TRACES_TABLE_NAME],
+        compression=compression,
+    )
+    pq.write_table(
+        builder.build_sessions(),
+        paths[SESSIONS_TABLE_NAME],
         compression=compression,
     )
     return paths
@@ -304,8 +315,16 @@ def _flush_batch(
 
 
 def _check_spec(spec: str) -> None:
-    if spec not in ("at/v1", "at"):
-        raise ValueError(f"unsupported spec: {spec}")
+    if spec in ("at/v2", "at"):
+        return
+    if spec == "at/v1":
+        raise ValueError(
+            "spec 'at/v1' is no longer supported in otela 0.2.0+. "
+            "The current spec is 'at/v2' (adds session_id, session_turn, "
+            "and the sessions rollup table). Re-run extraction from your "
+            "raw OTLP/JSON to upgrade — see CHANGELOG.md."
+        )
+    raise ValueError(f"unsupported spec: {spec}")
 
 
 def _pandas_types_mapper(arrow_type: pa.DataType):

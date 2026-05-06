@@ -20,6 +20,7 @@
               "endTimeUnixNano": "1714838506200000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "invoke_agent"}},
                 {"key": "gen_ai.agent.name", "value": {"stringValue": "refund_agent"}},
                 {"key": "gen_ai.system", "value": {"stringValue": "vertex_ai"}},
@@ -36,6 +37,7 @@
               "endTimeUnixNano": "1714838501100000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "chat"}},
                 {"key": "gen_ai.request.model", "value": {"stringValue": "gemini-2.0-flash"}},
                 {"key": "gen_ai.usage.input_tokens", "value": {"intValue": 312}},
@@ -74,6 +76,7 @@
               "endTimeUnixNano": "1714838501800000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
                 {"key": "gen_ai.tool.name", "value": {"stringValue": "lookup_order"}},
                 {"key": "gen_ai.tool.call.id", "value": {"stringValue": "call_a1b2c3"}},
@@ -98,6 +101,7 @@
               "endTimeUnixNano": "1714838502400000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
                 {"key": "gen_ai.tool.name", "value": {"stringValue": "check_refund_policy"}},
                 {"key": "gen_ai.tool.call.arguments", "value": {"stringValue": "{\"order_date\": \"2026-04-22\", \"reason\": \"damaged\"}"}}
@@ -121,6 +125,7 @@
               "endTimeUnixNano": "1714838503700000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "chat"}},
                 {"key": "gen_ai.request.model", "value": {"stringValue": "gemini-2.0-flash"}},
                 {"key": "gen_ai.usage.input_tokens", "value": {"intValue": 478}},
@@ -152,6 +157,7 @@
               "endTimeUnixNano": "1714838505400000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
                 {"key": "gen_ai.tool.name", "value": {"stringValue": "issue_refund"}},
                 {"key": "gen_ai.tool.call.arguments", "value": {"stringValue": "{\"order_id\": \"84291\", \"amount\": 89.99}"}}
@@ -175,6 +181,7 @@
               "endTimeUnixNano": "1714838506100000000",
               "status": {"code": "STATUS_CODE_OK"},
               "attributes": [
+                {"key": "gen_ai.conversation.id", "value": {"stringValue": "refund-conv-7a3f"}},
                 {"key": "gen_ai.operation.name", "value": {"stringValue": "execute_tool"}},
                 {"key": "gen_ai.tool.name", "value": {"stringValue": "send_confirmation_email"}},
                 {"key": "gen_ai.tool.call.arguments", "value": {"stringValue": "{\"to\": \"customer_3192\", \"refund_id\": \"rfd_77a8b\"}"}}

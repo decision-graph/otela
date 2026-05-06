@@ -10,6 +10,7 @@ from otela.schemas import (
     DOCUMENTS_SCHEMA,
     LINKS_SCHEMA,
     MESSAGES_SCHEMA,
+    SESSIONS_SCHEMA,
     SPANS_SCHEMA,
     TRACES_SCHEMA,
 )
@@ -30,6 +31,7 @@ def test_parquet_schemas_round_trip(fixtures_dir, tmp_path: Path):
         "documents": DOCUMENTS_SCHEMA,
         "links": LINKS_SCHEMA,
         "traces": TRACES_SCHEMA,
+        "sessions": SESSIONS_SCHEMA,
     }
     for name, schema in expected.items():
         t = pq.read_table(paths[name])

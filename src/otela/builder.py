@@ -24,6 +24,7 @@ from .schemas import (
     DOCUMENTS_SCHEMA,
     LINKS_SCHEMA,
     MESSAGES_SCHEMA,
+    SESSIONS_SCHEMA,
     SPANS_SCHEMA,
     SPEC,
     SPEC_VERSION,
@@ -54,6 +55,7 @@ class _SpanCols:
     service_name: list[str | None] = field(default_factory=list)
     scope_name: list[str | None] = field(default_factory=list)
     scope_version: list[str | None] = field(default_factory=list)
+    session_id: list[str | None] = field(default_factory=list)
     model_name: list[str | None] = field(default_factory=list)
     tool_name: list[str | None] = field(default_factory=list)
     agent_name: list[str | None] = field(default_factory=list)
@@ -107,17 +109,42 @@ class _TraceAccum:
 
     Only the root_span fields are picked deterministically (earliest start
     time among parentless spans). Everything else is min/max/sum.
+
+    `session_id` resolves first-non-null-wins across the trace's spans.
+    By spec, every span in a trace should share the same session via
+    context propagation; this rule just tolerates the case where the
+    instrumentation tags only some spans.
     """
 
     root_span_id: str | None = None
     root_span_name: str | None = None
     root_start_ns: int | None = None
     service_name: str | None = None
+    session_id: str | None = None
     start_ns: int | None = None
     end_ns: int | None = None
     span_count: int = 0
     error_count: int = 0
     status_rank: int = 0
+    in_tokens: int = 0
+    out_tokens: int = 0
+    tot_tokens: int = 0
+    saw_in_tokens: bool = False
+    saw_out_tokens: bool = False
+    saw_tot_tokens: bool = False
+
+
+@dataclass(slots=True)
+class _SessionAccum:
+    """Per-session rollup state. Folded over per-trace accumulators at
+    end-of-load (not per-span), so a trace's `session_id` is final by the
+    time it contributes."""
+
+    trace_count: int = 0
+    span_count: int = 0
+    error_count: int = 0
+    start_ns: int | None = None
+    end_ns: int | None = None
     in_tokens: int = 0
     out_tokens: int = 0
     tot_tokens: int = 0
@@ -178,6 +205,7 @@ class TableBuilder:
         s.service_name.append(span.service_name)
         s.scope_name.append(span.scope_name)
         s.scope_version.append(span.scope_version)
+        s.session_id.append(span.session_id)
         s.model_name.append(span.model_name)
         s.tool_name.append(span.tool_name)
         s.agent_name.append(span.agent_name)
@@ -230,6 +258,12 @@ class TableBuilder:
             self._traces[span.trace_id] = accum
 
         accum.span_count += 1
+
+        # First non-null span session id wins. Spec says every span in a
+        # trace shares this via context, so any divergence is instrumentation
+        # noise; deterministic first-wins keeps the rollup stable.
+        if accum.session_id is None and span.session_id:
+            accum.session_id = span.session_id
 
         # Status rollup: ERROR > OK > UNSET, plus separate error counter.
         rank = _STATUS_RANK.get(span.status_code, 0)
@@ -290,12 +324,21 @@ class TableBuilder:
         }
 
     def build_traces(self) -> pa.Table:
-        """Materialize the trace rollup table from accumulators."""
+        """Materialize the trace rollup table from accumulators.
+
+        `session_turn` is computed here as a 0-indexed rank within each
+        session, ordered by `start_time_unix_nano` ASC, with `trace_id`
+        lexicographic as deterministic tiebreak. Traces with no session
+        get a null `session_turn`.
+        """
+        turns = self._compute_session_turns()
         n = len(self._traces)
         cols: dict[str, list] = {
             "spec": [SPEC] * n,
             "spec_version": [SPEC_VERSION] * n,
             "trace_id": [],
+            "session_id": [],
+            "session_turn": [],
             "root_span_id": [],
             "root_span_name": [],
             "service_name": [],
@@ -311,6 +354,8 @@ class TableBuilder:
         }
         for trace_id, a in self._traces.items():
             cols["trace_id"].append(trace_id)
+            cols["session_id"].append(a.session_id)
+            cols["session_turn"].append(turns.get(trace_id))
             cols["root_span_id"].append(a.root_span_id)
             cols["root_span_name"].append(a.root_span_name)
             cols["service_name"].append(a.service_name)
@@ -331,6 +376,98 @@ class TableBuilder:
 
         arrays = [pa.array(cols[f.name], type=f.type) for f in TRACES_SCHEMA]
         return pa.Table.from_arrays(arrays, schema=TRACES_SCHEMA)
+
+    def build_sessions(self) -> pa.Table:
+        """Materialize the session rollup table.
+
+        Folds per-trace accumulators into per-session accumulators. Traces
+        with a null `session_id` are skipped. The result has one row per
+        distinct `session_id` seen across the load.
+        """
+        sessions: dict[str, _SessionAccum] = {}
+        for a in self._traces.values():
+            sid = a.session_id
+            if sid is None:
+                continue
+            sa = sessions.get(sid)
+            if sa is None:
+                sa = _SessionAccum()
+                sessions[sid] = sa
+            sa.trace_count += 1
+            sa.span_count += a.span_count
+            sa.error_count += a.error_count
+            if a.start_ns is not None and (sa.start_ns is None or a.start_ns < sa.start_ns):
+                sa.start_ns = a.start_ns
+            if a.end_ns is not None and (sa.end_ns is None or a.end_ns > sa.end_ns):
+                sa.end_ns = a.end_ns
+            if a.saw_in_tokens:
+                sa.in_tokens += a.in_tokens
+                sa.saw_in_tokens = True
+            if a.saw_out_tokens:
+                sa.out_tokens += a.out_tokens
+                sa.saw_out_tokens = True
+            if a.saw_tot_tokens:
+                sa.tot_tokens += a.tot_tokens
+                sa.saw_tot_tokens = True
+
+        n = len(sessions)
+        cols: dict[str, list] = {
+            "spec": [SPEC] * n,
+            "spec_version": [SPEC_VERSION] * n,
+            "session_id": [],
+            "trace_count": [],
+            "span_count": [],
+            "error_count": [],
+            "start_time_unix_nano": [],
+            "end_time_unix_nano": [],
+            "duration_ns": [],
+            "total_input_tokens": [],
+            "total_output_tokens": [],
+            "total_tokens": [],
+        }
+        for sid, sa in sessions.items():
+            cols["session_id"].append(sid)
+            cols["trace_count"].append(sa.trace_count)
+            cols["span_count"].append(sa.span_count)
+            cols["error_count"].append(sa.error_count)
+            cols["start_time_unix_nano"].append(sa.start_ns)
+            cols["end_time_unix_nano"].append(sa.end_ns)
+            duration = (
+                sa.end_ns - sa.start_ns
+                if sa.start_ns is not None and sa.end_ns is not None
+                else None
+            )
+            cols["duration_ns"].append(duration)
+            cols["total_input_tokens"].append(sa.in_tokens if sa.saw_in_tokens else None)
+            cols["total_output_tokens"].append(sa.out_tokens if sa.saw_out_tokens else None)
+            cols["total_tokens"].append(sa.tot_tokens if sa.saw_tot_tokens else None)
+
+        arrays = [pa.array(cols[f.name], type=f.type) for f in SESSIONS_SCHEMA]
+        return pa.Table.from_arrays(arrays, schema=SESSIONS_SCHEMA)
+
+    def _compute_session_turns(self) -> dict[str, int]:
+        """Assign 0-indexed session_turn per trace.
+
+        Sort traces within each session by (start_time_unix_nano ASC,
+        trace_id ASC). The trace_id tiebreak makes the output stable when
+        two traces happen to start at the same nanosecond.
+        """
+        by_session: dict[str, list[tuple[int, str]]] = {}
+        for trace_id, a in self._traces.items():
+            sid = a.session_id
+            if sid is None:
+                continue
+            # Sort key: traces with unknown start time go last (rare —
+            # happens when no span had a start time).
+            sort_start = a.start_ns if a.start_ns is not None else 1 << 62
+            by_session.setdefault(sid, []).append((sort_start, trace_id))
+
+        turns: dict[str, int] = {}
+        for entries in by_session.values():
+            entries.sort()
+            for pos, (_, trace_id) in enumerate(entries):
+                turns[trace_id] = pos
+        return turns
 
 
 def _to_table(cols: Any, schema: pa.Schema) -> pa.Table:

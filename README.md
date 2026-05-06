@@ -25,7 +25,8 @@ This writes one Parquet file per table:
 
 ```
 otela-out/
-├── traces.parquet      # one row per trace (rollup)
+├── sessions.parquet    # one row per session (multi-trace conversation rollup)
+├── traces.parquet      # one row per trace (rollup), with session_id + session_turn
 ├── spans.parquet       # one row per span
 ├── messages.parquet    # LLM messages, joinable on (trace_id, span_id)
 ├── documents.parquet   # retrieved docs from RETRIEVER spans
@@ -122,18 +123,19 @@ otela totables path/to/otel/trace.json path/to/output/ \
 ```
 
 ```python
-trace_dicts = otela.to_dicts(otela.load('path/...', spec='at/v1'))
+trace_dicts = otela.to_dicts(otela.load('path/...', spec='at/v2'))
 ```
 
-Forward-slash notation (`at/v1`) calls the spec at a specific version.
+Forward-slash notation (`at/v2`) calls the spec at a specific version.
 This is recommended as specs may change in non-backward-compatible ways.
 Omitting the version (`at`) calls the latest. Specification type and
 version are always embedded in the output records (`spec`,
 `spec_version` columns or fields). Migration utilities will be added as
 needed.
 
-> **Status:** `at/v1` is implemented today. `wg/v1` is on the roadmap —
-> see [Status](#status) below.
+> **Status:** `at/v2` is implemented today (adds session_id, session_turn,
+> and the sessions rollup; supersedes `at/v1`). `wg/v1` is on the
+> roadmap — see [Status](#status) below.
 
 ## Output Formats
 
@@ -157,7 +159,8 @@ development, but for billions of spans use `parquet`.
 
 | Area                                            | Status         |
 | ----------------------------------------------- | -------------- |
-| `agent-trace` spec, version `at/v1`             | implemented    |
+| `agent-trace` spec, version `at/v2`             | implemented    |
+| Session detection + multi-turn `sessions` rollup | implemented   |
 | OTLP/JSON file + directory ingestion            | implemented    |
 | OpenInference convention                        | implemented    |
 | OTel GenAI semconv (events + attrs)             | implemented    |
@@ -176,42 +179,64 @@ development, but for billions of spans use `parquet`.
 | Streaming nested-record (`torecords`) writer    | not yet started |
 | Parquet directory partitioning (Hive style)     | not yet started |
 
-## Schema Reference (`agent-trace`, `at/v1`)
+## Schema Reference (`agent-trace`, `at/v2`)
 
-Every `otela.load()` call returns a dict of five Arrow tables. Schemas
+Every `otela.load()` call returns a dict of six Arrow tables. Schemas
 are stable and versioned — every row carries `spec` and `spec_version`,
 and `spec_version` only changes on a non-backward-compatible schema
 change. Schemas are importable: `otela.SPANS_SCHEMA`,
-`otela.TRACES_SCHEMA`, etc.
+`otela.TRACES_SCHEMA`, `otela.SESSIONS_SCHEMA`, etc.
 
 ```
 output/
-├── traces.parquet      # one row per trace (rollup)
+├── sessions.parquet    # one row per session (multi-trace rollup)
+├── traces.parquet      # one row per trace (rollup) — carries session_id, session_turn
 ├── spans.parquet       # one row per span — the fact table
 ├── messages.parquet    # one row per LLM message; joins on (trace_id, span_id)
 ├── documents.parquet   # one row per retrieved document
 └── links.parquet       # OTel span links
 ```
 
+### `sessions`
+
+Session-level rollup, one row per distinct `session_id`. A session
+groups multiple traces (turns of one conversation). Traces with no
+`session_id` are excluded.
+
+| Column                   | Type    | Notes                                           |
+| ------------------------ | ------- | ----------------------------------------------- |
+| `session_id`             | string  | primary key                                     |
+| `trace_count`            | int64   |                                                 |
+| `span_count`             | int64   | sum across traces                               |
+| `error_count`            | int64   | sum across traces                               |
+| `start_time_unix_nano`   | int64   | min over traces                                 |
+| `end_time_unix_nano`     | int64   | max over traces                                 |
+| `duration_ns`            | int64   |                                                 |
+| `total_input_tokens`     | int64   | sum across traces; `NULL` if no trace had it    |
+| `total_output_tokens`    | int64   | "                                               |
+| `total_tokens`           | int64   | "                                               |
+
 ### `traces`
 
 Trace-level rollup, one row per trace.
 
-| Column                   | Type    | Notes                                           |
-| ------------------------ | ------- | ----------------------------------------------- |
-| `trace_id`               | string  | primary key                                     |
-| `root_span_id`           | string  | earliest parentless span                        |
-| `root_span_name`         | string  |                                                 |
-| `service_name`           | string  | from the root span's resource                   |
-| `start_time_unix_nano`   | int64   | min over spans                                  |
-| `end_time_unix_nano`     | int64   | max over spans                                  |
-| `duration_ns`            | int64   |                                                 |
-| `span_count`             | int64   |                                                 |
-| `error_count`            | int64   | spans with `status = ERROR`                     |
-| `status`                 | string  | worst-of: `ERROR > OK > UNSET`                  |
-| `total_input_tokens`     | int64   | sum across spans; `NULL` if no span had it      |
-| `total_output_tokens`    | int64   | "                                               |
-| `total_tokens`           | int64   | "                                               |
+| Column                   | Type    | Notes                                                              |
+| ------------------------ | ------- | ------------------------------------------------------------------ |
+| `trace_id`               | string  | primary key                                                        |
+| `session_id`             | string  | nullable; promoted from any recognized session attribute (see below) |
+| `session_turn`           | int32   | 0-indexed position within session, ordered by `start_time_unix_nano` ASC, `trace_id` lex tiebreak. Null when `session_id` is null. otela-derived; batch-scoped. |
+| `root_span_id`           | string  | earliest parentless span                                           |
+| `root_span_name`         | string  |                                                                    |
+| `service_name`           | string  | from the root span's resource                                      |
+| `start_time_unix_nano`   | int64   | min over spans                                                     |
+| `end_time_unix_nano`     | int64   | max over spans                                                     |
+| `duration_ns`            | int64   |                                                                    |
+| `span_count`             | int64   |                                                                    |
+| `error_count`            | int64   | spans with `status = ERROR`                                        |
+| `status`                 | string  | worst-of: `ERROR > OK > UNSET`                                     |
+| `total_input_tokens`     | int64   | sum across spans; `NULL` if no span had it                         |
+| `total_output_tokens`    | int64   | "                                                                  |
+| `total_tokens`           | int64   | "                                                                  |
 
 ### `spans`
 
@@ -228,6 +253,10 @@ to the side tables on `(trace_id, span_id)`.
 - **Agent-trace canonical:** `model_name`, `tool_name`, `agent_name`,
   `input_tokens`, `output_tokens`, `total_tokens`, `io_format` (`text |
   tool_call | retrieval | unknown`), `input_text`, `output_text`
+- **Session:** `session_id` — promoted from any recognized session/
+  conversation attribute (see "Source Conventions Accepted" below).
+  Carried on every span the source instrumentation tagged so
+  `WHERE session_id = X` queries hit the spans table without a join.
 - **Fidelity:** `raw_attributes_json` — JSON-encoded leftover attrs the
   normalizer didn't promote into a typed column. No information is
   silently dropped.
@@ -270,14 +299,23 @@ Spans are auto-classified per-span. A single trace can mix conventions —
 e.g. an OpenInference LangChain instrumentation alongside an OTel GenAI
 model call.
 
-| Convention                     | Detection signal                                          |
-| ------------------------------ | --------------------------------------------------------- |
-| [OpenInference](https://arize-ai.github.io/openinference/spec/) | `openinference.span.kind`, `llm.*`, `tool.*`, `retrieval.*`, `embedding.*` |
-| [OTel GenAI semconv](https://opentelemetry.io/docs/specs/semconv/gen-ai/) | any `gen_ai.*` attribute or span event       |
-| Vercel AI SDK                  | `ai.*` attributes                                          |
-| MLflow                         | `mlflow.*` attributes                                      |
-| Traceloop / OpenLLMetry        | `traceloop.*` attributes                                   |
-| Generic                        | `input.value` / `output.value` only                        |
+| Convention                     | Detection signal                                          | Session attribute                                |
+| ------------------------------ | --------------------------------------------------------- | ------------------------------------------------ |
+| [OpenInference](https://arize-ai.github.io/openinference/spec/) | `openinference.span.kind`, `llm.*`, `tool.*`, `retrieval.*`, `embedding.*` | `session.id`                          |
+| [OTel GenAI semconv](https://opentelemetry.io/docs/specs/semconv/gen-ai/) | any `gen_ai.*` attribute or span event       | `gen_ai.conversation.id`                         |
+| Vercel AI SDK                  | `ai.*` attributes                                          | `ai.telemetry.metadata.sessionId`                |
+| MLflow                         | `mlflow.*` attributes                                      | `session.id` or `mlflow.trace.session`           |
+| Traceloop / OpenLLMetry        | `traceloop.*` attributes                                   | `traceloop.association.properties.session_id`   |
+| Google ADK (OTel GenAI extension) | `gcp.vertex.agent.*` attributes                          | `gcp.vertex.agent.session_id`                    |
+| Generic                        | `input.value` / `output.value` only                        | —                                                |
+
+When multiple session attributes are present on the same span, otela
+picks one with this precedence (most-standard first):
+`gen_ai.conversation.id` → `session.id` → `gcp.vertex.agent.session_id`
+→ `ai.telemetry.metadata.sessionId` → `mlflow.trace.session` →
+`traceloop.association.properties.session_id`. The matched attribute is
+promoted into the `session_id` column and removed from
+`raw_attributes_json` to avoid duplication.
 
 ## Design Principles
 
@@ -389,12 +427,12 @@ CI runs both `pytest` and `ruff check` — both must be green.
 
 ### Generating real-trace fixtures
 
-Synthetic fixtures (`tests/fixtures/openinference_sample.json`,
-`otel_genai_sample.json`) cover the spec, but production SDKs surface
-shape edge cases that hand-written fixtures don't. The
-`scripts/generate_fixtures.py` harness runs minimal example agents under
-real instrumentation and commits the resulting OTLP/JSON to
-`tests/fixtures/real/` so the test suite can assert against them.
+Synthetic fixtures (`examples/sample.json`, `examples/sample_genai.json`)
+cover the spec, but production SDKs surface shape edge cases that
+hand-written fixtures don't. The `scripts/generate_fixtures.py` harness
+runs minimal example agents under real instrumentation and commits the
+resulting OTLP/JSON to `tests/fixtures/real/` so the test suite can
+assert against them.
 
 Currently supported sources:
 
