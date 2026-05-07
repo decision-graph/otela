@@ -13,6 +13,17 @@ line, up to the next `## [` heading. Keep version sections under that
 exact pattern. Editorial prose is fine; just don't change the heading.
 -->
 
+## [0.2.2] — 2026-05-07
+
+### Changed
+
+- Renamed roadmap references from `workflow-graph` / `wg/v1` to
+  `decision-graph` / `dg/v1`. The spec was renamed before its first
+  release and now lives in its own repository at
+  [decision-graph/decision-graph](https://github.com/decision-graph/decision-graph).
+  Updated `README.md` and the `spec` parameter docstring on
+  `otela.load()`. No functional changes.
+
 ## [0.2.1] — 2026-05-07
 
 ### Changed

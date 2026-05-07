@@ -40,7 +40,7 @@ def load(
     for sessions).
 
     The `spec` argument is currently fixed at "at/v2"; the parameter
-    is reserved for a future `wg/v1` workflow-graph spec.
+    is reserved for a future `dg/v1` decision-graph spec.
     """
     _check_spec(spec)
     builder = TableBuilder()

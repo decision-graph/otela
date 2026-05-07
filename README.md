@@ -105,11 +105,12 @@ differently. otela has two specs for this:
    that gives you uniform records for analytics. Stays close to OTel
    naming conventions while surfacing input & output attributes and using
    a schema for tabular/batch processing.
-2. `workflow-graph (wg)`: A more opinionated spec for representing the
+2. `decision-graph (dg)`: A more opinionated spec for representing the
    structural decisions and actions in a workflow — agent, human, or
    hybrid. It's prescriptive about node and relationship types in a graph
    schema, optimized for [context graphs](https://neo4j.com/blog/agentic-ai/hands-on-with-context-graphs-and-neo4j/),
-   reinforcement learning, and other research.
+   reinforcement learning, and other research. The spec lives in its own
+   repository at [decision-graph/decision-graph](https://github.com/decision-graph/decision-graph).
 
 Both take either OpenInference or OTel GenAI semantic conventions as
 input and also tolerate Vercel AI SDK (`ai.*`), MLflow (`mlflow.*`), and
@@ -119,7 +120,7 @@ To specify the spec:
 
 ```bash
 otela totables path/to/otel/trace.json path/to/output/ \
-  --spec wg/v1
+  --spec dg/v1
 ```
 
 ```python
@@ -134,7 +135,7 @@ version are always embedded in the output records (`spec`,
 needed.
 
 > **Status:** `at/v2` is implemented today (adds session_id, session_turn,
-> and the sessions rollup; supersedes `at/v1`). `wg/v1` is on the
+> and the sessions rollup; supersedes `at/v1`). `dg/v1` is on the
 > roadmap — see [Status](#status) below.
 
 ## Output Formats
@@ -174,7 +175,7 @@ development, but for billions of spans use `parquet`.
 | Real-trace fixtures: LlamaIndex (RETRIEVER / EMBEDDING) | planned — next |
 | HuggingFace dataset adapters                    | planned — after LlamaIndex |
 | Phoenix / Langfuse native export readers        | planned — opportunistic |
-| `workflow-graph` spec, `wg/v1`                  | not yet started |
+| `decision-graph` spec, `dg/v1`                  | not yet started |
 | Tokenized-text tensors for LLM fine-tuning      | not yet started |
 | Streaming nested-record (`torecords`) writer    | not yet started |
 | Parquet directory partitioning (Hive style)     | not yet started |
@@ -361,7 +362,8 @@ promoted into the `session_id` column and removed from
   traces in those backends today, the fastest path is configuring an
   OTLP file dump on the backend; native readers are a convenience
   layer worth adding once we see real demand.
-- `wg/v1` workflow-graph spec
+- `dg/v1` decision-graph spec
+  ([decision-graph/decision-graph](https://github.com/decision-graph/decision-graph))
 - Tokenizer-aware `to_tensors()` mode for LLM fine-tuning
   (`input_ids` / `attention_mask` per message)
 - Streaming `torecords` writer (per-trace flush as soon as a trace is
