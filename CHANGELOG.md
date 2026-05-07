@@ -13,6 +13,13 @@ line, up to the next `## [` heading. Keep version sections under that
 exact pattern. Editorial prose is fine; just don't change the heading.
 -->
 
+## [0.2.1] — 2026-05-07
+
+### Changed
+
+- Repository transferred to [decision-graph/otela](https://github.com/decision-graph/otela).
+  Updated URLs in `pyproject.toml` and `README.md`; no functional changes.
+
 ## [0.2.0] — 2026-05-06
 
 `agent-trace` spec bumped to **`at/v2`**. The bump is driven by
