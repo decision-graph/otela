@@ -1,6 +1,6 @@
 [project]
 name = "otela"
-version = "0.2.0"
+version = "0.2.1"
 description = "Format OpenTelemetry agent traces for analytics, ML, and context graphs"
 readme = "README.md"
 license = "Apache-2.0"
@@ -42,9 +42,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/zach-blumenfeld/otela"
-Repository = "https://github.com/zach-blumenfeld/otela"
-Issues = "https://github.com/zach-blumenfeld/otela/issues"
+Homepage = "https://github.com/decision-graph/otela"
+Repository = "https://github.com/decision-graph/otela"
+Issues = "https://github.com/decision-graph/otela/issues"
 
 [project.scripts]
 otela = "otela.cli:main"

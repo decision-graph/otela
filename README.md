@@ -15,7 +15,7 @@ Grab a sample OTel agent trace and run otela's CLI against it via `uvx` —
 nothing gets installed permanently:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/zach-blumenfeld/otela/main/examples/sample.json \
+curl -sL https://raw.githubusercontent.com/decision-graph/otela/main/examples/sample.json \
   -o trace.json
 
 uvx otela totables trace.json otela-out
@@ -376,7 +376,7 @@ please open an issue.
 ## Development
 
 ```bash
-git clone https://github.com/zach-blumenfeld/otela
+git clone https://github.com/decision-graph/otela
 cd otela
 uv sync                  # installs runtime + dev deps (pytest, ruff, torch, pandas)
 ```
